@@ -25,7 +25,7 @@ func (this *AuthInterceptor) Before(
 		s := strings.Split(authHeader, " ")
 		if len(s) == 2 {
 			token := s[1]
-			payload, _, err := jose.Decode(token, key)
+			payload, _, err := jose.Decode(token, ii.GetJwtKey())
 
 			if err == nil {
 				// fmt.Printf("\npayload = %v\n", payload)

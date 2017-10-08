@@ -8,8 +8,6 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-var key = []byte("Some secret password")
-
 func main() {
 	confFile := flag.String("c", "/etc/myapp/app.json", "Configration file path.")
 	flag.Parse()

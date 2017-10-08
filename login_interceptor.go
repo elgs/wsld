@@ -28,7 +28,7 @@ func (this *LoginInterceptor) After(tx *sql.Tx, result *[]interface{}, ii *wsl.I
 			if err != nil {
 				return nil
 			}
-			token, err := createJwtToken(string(loginData))
+			token, err := jose.Sign(string(loginData), jose.HS256, ii.GetJwtKey())
 			if err != nil {
 				return nil
 			}
@@ -39,9 +39,4 @@ func (this *LoginInterceptor) After(tx *sql.Tx, result *[]interface{}, ii *wsl.I
 		return nil
 	}
 	return nil
-}
-
-func createJwtToken(payload string) (string, error) {
-	token, err := jose.Sign(payload, jose.HS256, key)
-	return token, err
 }
