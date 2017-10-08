@@ -14,7 +14,12 @@ type AuthInterceptor struct {
 	*wsl.DefaultInterceptor
 }
 
-func (this *AuthInterceptor) Before(tx *sql.Tx, script *string, params map[string]string, headers map[string]string, fns map[string]func()) error {
+func (this *AuthInterceptor) Before(
+	tx *sql.Tx,
+	script *string,
+	params map[string]string,
+	headers map[string]string,
+	ii *wsl.InterceptorInterface) error {
 	authHeader := headers["Authorization"]
 	if authHeader != "" {
 		s := strings.Split(authHeader, " ")
@@ -56,7 +61,7 @@ func (this *AuthInterceptor) Before(tx *sql.Tx, script *string, params map[strin
 	}
 	return nil
 }
-func (this *AuthInterceptor) After(tx *sql.Tx, result *[]interface{}) error {
+func (this *AuthInterceptor) After(tx *sql.Tx, result *[]interface{}, ii *wsl.InterceptorInterface) error {
 	return nil
 }
 func (this *AuthInterceptor) OnError(err *error) error {

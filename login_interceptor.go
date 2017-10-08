@@ -13,12 +13,12 @@ type LoginInterceptor struct {
 	*wsl.DefaultInterceptor
 }
 
-func (this *LoginInterceptor) Before(tx *sql.Tx, script *string, params map[string]string, headers map[string]string, fns map[string]func()) error {
+func (this *LoginInterceptor) Before(tx *sql.Tx, script *string, params map[string]string, headers map[string]string, ii *wsl.InterceptorInterface) error {
 	params["case"] = "lower"
 	return nil
 }
 
-func (this *LoginInterceptor) After(tx *sql.Tx, result *[]interface{}) error {
+func (this *LoginInterceptor) After(tx *sql.Tx, result *[]interface{}, ii *wsl.InterceptorInterface) error {
 	if v, ok := (*result)[0].([]map[string]string); ok {
 		if len(v) == 0 {
 			log.Println("Login failed.")
