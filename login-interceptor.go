@@ -13,12 +13,12 @@ type LoginInterceptor struct {
 	*wsl.DefaultInterceptor
 }
 
-func (this *LoginInterceptor) Before(tx *sql.Tx, script *string, params map[string]string, headers map[string]string, ii *wsl.InterceptorInterface) error {
+func (this *LoginInterceptor) Before(tx *sql.Tx, script *string, params map[string]string, headers map[string]string, config *wsl.Config) error {
 	params["case"] = "lower"
 	return nil
 }
 
-func (this *LoginInterceptor) After(tx *sql.Tx, result *[]interface{}, ii *wsl.InterceptorInterface) error {
+func (this *LoginInterceptor) After(tx *sql.Tx, result *[]interface{}, config *wsl.Config) error {
 	if v, ok := (*result)[0].([]map[string]string); ok {
 		if len(v) == 0 {
 			log.Println("Login failed.")
@@ -28,7 +28,7 @@ func (this *LoginInterceptor) After(tx *sql.Tx, result *[]interface{}, ii *wsl.I
 			if err != nil {
 				return nil
 			}
-			token, err := jose.Sign(string(loginData), jose.HS256, ii.GetJwtKey())
+			token, err := jose.Sign(string(loginData), jose.HS256, []byte(config.Web.JwtKey))
 			if err != nil {
 				return nil
 			}

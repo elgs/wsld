@@ -12,13 +12,13 @@ type DummyInterceptor struct {
 	Message string
 }
 
-func (this *DummyInterceptor) Before(tx *sql.Tx, script *string, params map[string]string, headers map[string]string, ii *wsl.InterceptorInterface) error {
+func (this *DummyInterceptor) Before(tx *sql.Tx, script *string, params map[string]string, headers map[string]string, config *wsl.Config) error {
 	log.Println("Before", this.Message)
 	// log.Println(headers)
 	// log.Println(params["__client_ip"])
 	return nil
 }
-func (this *DummyInterceptor) After(tx *sql.Tx, result *[]interface{}, ii *wsl.InterceptorInterface) error {
+func (this *DummyInterceptor) After(tx *sql.Tx, result *[]interface{}, config *wsl.Config) error {
 	log.Println("After", this.Message)
 	return nil
 }

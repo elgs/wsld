@@ -23,6 +23,7 @@ func main() {
 
 	wsl.RegisterQueryInterceptors("load-scripts", &LoadScriptsInterceptor{})
 	wsl.RegisterQueryInterceptors("login", &LoginInterceptor{})
+	wsl.RegisterQueryInterceptors("signup", &SignupInterceptor{})
 
 	wsld.Start()
 	wsl.Hook()

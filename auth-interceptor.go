@@ -19,13 +19,13 @@ func (this *AuthInterceptor) Before(
 	script *string,
 	params map[string]string,
 	headers map[string]string,
-	ii *wsl.InterceptorInterface) error {
+	config *wsl.Config) error {
 	authHeader := headers["Authorization"]
 	if authHeader != "" {
 		s := strings.Split(authHeader, " ")
 		if len(s) == 2 {
 			token := s[1]
-			payload, _, err := jose.Decode(token, ii.GetJwtKey())
+			payload, _, err := jose.Decode(token, []byte(config.Web.JwtKey))
 
 			if err == nil {
 				// fmt.Printf("\npayload = %v\n", payload)
@@ -61,7 +61,7 @@ func (this *AuthInterceptor) Before(
 	}
 	return nil
 }
-func (this *AuthInterceptor) After(tx *sql.Tx, result *[]interface{}, ii *wsl.InterceptorInterface) error {
+func (this *AuthInterceptor) After(tx *sql.Tx, result *[]interface{}, config *wsl.Config) error {
 	return nil
 }
 func (this *AuthInterceptor) OnError(err *error) error {
