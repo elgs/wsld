@@ -49,9 +49,10 @@ func (this *AuthInterceptor) Before(
 				userId := fmt.Sprintf("%v", _userId)
 				userMode := fmt.Sprintf("%v", _userMode)
 
-				params["_session_id"] = sessionId
-				params["_user_id"] = userId
-				params["_user_mode"] = userMode
+				params["__session_id"] = sessionId
+				params["__user_id"] = userId
+				params["__user_mode"] = userMode
+
 				//and/or use headers
 				// fmt.Printf("\nheaders = %v\n", headers)
 			} else {

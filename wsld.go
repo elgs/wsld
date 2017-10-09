@@ -18,7 +18,7 @@ func main() {
 	}
 
 	// Register a bunch of interceptors
-	wsl.RegisterGlobalInterceptors(&DummyInterceptor{Message: "Global"})
+	// wsl.RegisterGlobalInterceptors(&DummyInterceptor{Message: "Global"})
 	wsl.RegisterGlobalInterceptors(&AuthInterceptor{})
 
 	wsl.RegisterQueryInterceptors("load-scripts", &LoadScriptsInterceptor{})

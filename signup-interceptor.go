@@ -36,6 +36,16 @@ func (this *SignupInterceptor) After(tx *sql.Tx, result *[]interface{}, config *
 		email := userData[0]["email"]
 		status := userData[0]["status"]
 		log.Println(username, email, status)
+		log.Println(config.Mail.MailHost)
+		err := sendMail(
+			config.Mail.MailHost,
+			config.Mail.MailUsername,
+			config.Mail.MailPassword,
+			config.Mail.MailFrom,
+			"subject"+username, status, email)
+		if err != nil {
+			return err
+		}
 	} else {
 		return errors.New("Failed to sign up.")
 	}

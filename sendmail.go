@@ -4,11 +4,12 @@ import (
 	"crypto/tls"
 	"fmt"
 	"net/smtp"
+	"strings"
 )
 
-func sendMail(host, port, username, password, subject, body, from string, to ...string) error {
+func sendMail(host, username, password, from, subject, body string, to ...string) error {
 	// Connect to the remote SMTP server.
-	c, err := smtp.Dial(host + ":" + port)
+	c, err := smtp.Dial(host)
 	if err != nil {
 		fmt.Println(err)
 		return err
@@ -23,7 +24,7 @@ func sendMail(host, port, username, password, subject, body, from string, to ...
 	}
 
 	if ok, _ := c.Extension("AUTH"); ok {
-		a := smtp.PlainAuth("", username, password, host)
+		a := smtp.PlainAuth("", username, password, strings.Split(host, ":")[0])
 		if err = c.Auth(a); err != nil {
 			fmt.Println(err)
 			return err
