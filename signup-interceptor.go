@@ -3,7 +3,6 @@ package main
 import (
 	"database/sql"
 	"errors"
-	"log"
 	"strings"
 
 	"github.com/elgs/gostrgen"
@@ -35,8 +34,6 @@ func (this *SignupInterceptor) After(tx *sql.Tx, result *[]interface{}, config *
 		username := userData[0]["username"]
 		email := userData[0]["email"]
 		status := userData[0]["status"]
-		log.Println(username, email, status)
-		log.Println(config.Mail.MailHost)
 		err := sendMail(
 			config.Mail.MailHost,
 			config.Mail.MailUsername,
