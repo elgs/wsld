@@ -18,7 +18,7 @@ func (this *SignupInterceptor) Before(tx *sql.Tx, script *string, params map[str
 	if err != nil {
 		return err
 	}
-	*script = strings.Replace(*script, "pfv-", "pfv-"+vCode, 1)
+	*script = strings.Replace(*script, "$pfv$", vCode, 1)
 	params["case"] = "lower"
 	return nil
 }
