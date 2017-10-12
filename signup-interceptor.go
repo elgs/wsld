@@ -31,15 +31,14 @@ func (this *SignupInterceptor) After(tx *sql.Tx, result *[]interface{}, config *
 		if len(userData) == 0 {
 			return errors.New("Failed to sign up.")
 		}
-		username := userData[0]["username"]
 		email := userData[0]["email"]
-		status := userData[0]["status"]
+		vCode := userData[0]["v_code"]
 		err := sendMail(
 			config.Mail.MailHost,
 			config.Mail.MailUsername,
 			config.Mail.MailPassword,
 			config.Mail.MailFrom,
-			"subject"+username, status, email)
+			"New Account Verification Code", vCode, email)
 		if err != nil {
 			return err
 		}
