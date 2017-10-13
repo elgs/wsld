@@ -19,7 +19,13 @@ func (this *SignupInterceptor) Before(tx *sql.Tx, script *string, params map[str
 	if err != nil {
 		return err
 	}
-	*script = strings.Replace(*script, "$pfv$", vCode, 1)
+	*script = strings.Replace(*script, "$pending-for-verification$", vCode, 1)
+
+	sessionKey, err := gostrgen.RandGen(20, gostrgen.All, "", "")
+	if err != nil {
+		return err
+	}
+	*script = strings.Replace(*script, "$session-key$", sessionKey, 1)
 	params["case"] = "lower"
 	return nil
 }

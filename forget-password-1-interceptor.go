@@ -19,7 +19,7 @@ func (this *ForgetPassword1Interceptor) Before(tx *sql.Tx, script *string, param
 	if err != nil {
 		return err
 	}
-	*script = strings.Replace(*script, "$rp$", vCode, 1)
+	*script = strings.Replace(*script, "$recovering-password$", vCode, 1)
 	params["case"] = "lower"
 	return nil
 }
