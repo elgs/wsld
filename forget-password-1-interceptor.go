@@ -13,7 +13,8 @@ type ForgetPassword1Interceptor struct {
 	*wsl.DefaultInterceptor
 }
 
-func (this *ForgetPassword1Interceptor) Before(tx *sql.Tx, script *string, params map[string]string, headers map[string]string, config *wsl.Config) error {
+func (this *ForgetPassword1Interceptor) Before(tx *sql.Tx, script *string, params map[string]string,
+	headers map[string]string, wslApp *wsl.WSL) error {
 	vCode, err := gostrgen.RandGen(8, gostrgen.LowerUpperDigit, "", "lO") // exclude small L and big O
 	if err != nil {
 		return err
@@ -23,7 +24,7 @@ func (this *ForgetPassword1Interceptor) Before(tx *sql.Tx, script *string, param
 	return nil
 }
 
-func (this *ForgetPassword1Interceptor) After(tx *sql.Tx, result *[]interface{}, config *wsl.Config) error {
+func (this *ForgetPassword1Interceptor) After(tx *sql.Tx, result *[]interface{}, wslApp *wsl.WSL) error {
 	if len(*result) == 0 {
 		return errors.New("Failed get user information")
 	}
@@ -33,12 +34,8 @@ func (this *ForgetPassword1Interceptor) After(tx *sql.Tx, result *[]interface{},
 		}
 		email := userData[0]["email"]
 		vCode := userData[0]["v_code"]
-		err := sendMail(
-			config.Mail.MailHost,
-			config.Mail.MailUsername,
-			config.Mail.MailPassword,
-			config.Mail.MailFrom,
-			"Password Reset Verification Code", vCode, email)
+		err := wslApp.SendMail(
+			"config.Mail.MailFrom", "Password Reset Verification Code", vCode, email)
 		if err != nil {
 			return err
 		}

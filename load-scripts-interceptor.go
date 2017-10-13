@@ -25,9 +25,10 @@ func loadScripts(config *wsl.Config) ([]string, error) {
 	return scriptNames, err
 }
 
-func (this *LoadScriptsInterceptor) Before(tx *sql.Tx, script *string, params map[string]string, headers map[string]string, config *wsl.Config) error {
+func (this *LoadScriptsInterceptor) Before(tx *sql.Tx, script *string, params map[string]string,
+	headers map[string]string, wslApp *wsl.WSL) error {
 	if params["_user_mode"] == "root" {
-		sn, err := loadScripts(config)
+		sn, err := loadScripts(wslApp.Config)
 		scriptNames = sn
 		if err != nil {
 			return err
@@ -37,7 +38,7 @@ func (this *LoadScriptsInterceptor) Before(tx *sql.Tx, script *string, params ma
 	return errors.New("No Access")
 }
 
-func (this *LoadScriptsInterceptor) After(tx *sql.Tx, result *[]interface{}, config *wsl.Config) error {
+func (this *LoadScriptsInterceptor) After(tx *sql.Tx, result *[]interface{}, wslApp *wsl.WSL) error {
 	for _, s := range scriptNames {
 		*result = append(*result, s)
 	}
