@@ -35,10 +35,11 @@ func (this *ForgetPassword1Interceptor) After(tx *sql.Tx, result *[]interface{},
 		email := userData[0]["email"]
 		vCode := userData[0]["v_code"]
 		err := wslApp.SendMail(
-			"config.Mail.MailFrom", "Password Reset Verification Code", vCode, email)
+			wslApp.Config.App["mail_from"].(string), "Password Reset Verification Code", vCode, email)
 		if err != nil {
 			return err
 		}
+		delete(userData[0], "v_code")
 	} else {
 		return errors.New("Failed get user information")
 	}

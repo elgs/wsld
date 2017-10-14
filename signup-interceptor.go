@@ -41,10 +41,11 @@ func (this *SignupInterceptor) After(tx *sql.Tx, result *[]interface{}, wslApp *
 		email := userData[0]["email"]
 		vCode := userData[0]["v_code"]
 		err := wslApp.SendMail(
-			"config.Mail.MailFrom", "New Account Verification Code", vCode, email)
+			wslApp.Config.App["mail_from"].(string), "New Account Verification Code", vCode, email)
 		if err != nil {
 			return err
 		}
+		delete(userData[0], "v_code")
 	} else {
 		return errors.New("Failed to sign up.")
 	}

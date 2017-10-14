@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"log"
+	"time"
 
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/elgs/wsl"
@@ -25,6 +26,10 @@ func (this *LoginInterceptor) After(tx *sql.Tx, result *[]interface{}, wslApp *w
 		for k, v := range u[0] {
 			mapClaims[k] = v
 		}
+		mapClaims["exp"] = time.Now().Add(time.Second * 10).Unix()
+
+		// expHours := wslApp.Config.App["session_expire_in_hours"].(float64)
+		// mapClaims["exp"] = time.Now().Add(time.Hour * time.Duration(expHours)).Unix()
 		token := jwt.NewWithClaims(jwt.SigningMethodHS256, mapClaims)
 
 		userId := u[0]["user_id"]
