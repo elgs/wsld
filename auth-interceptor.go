@@ -4,7 +4,9 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"net/http"
 	"strings"
+	"time"
 
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/elgs/gosqljson"
@@ -42,8 +44,10 @@ func (this *AuthInterceptor) Before(
 	tx *sql.Tx,
 	script *string,
 	params map[string]string,
-	headers map[string]string,
+	w http.ResponseWriter,
+	r *http.Request,
 	wslApp *wsl.WSL) error {
+	headers := wsl.ValuesToMap(r.Header)
 	authHeader := headers["Authorization"]
 	if authHeader != "" {
 		s := strings.Split(authHeader, " ")
@@ -53,6 +57,13 @@ func (this *AuthInterceptor) Before(
 			token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 				if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 					return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+				}
+
+				exp := token.Claims.(jwt.MapClaims)["exp"]
+				expInSeconds := int64(exp.(float64)) - time.Now().Unix()
+				sessionSeconds := 60 * int64(wslApp.Config.App["session_expire_in_minutes"].(float64))
+				if sessionSeconds-expInSeconds*2 > 0 {
+					fmt.Println("need to renew token")
 				}
 
 				userId := token.Claims.(jwt.MapClaims)["user_id"]
@@ -82,7 +93,8 @@ func (this *AuthInterceptor) Before(
 	}
 	return nil
 }
-func (this *AuthInterceptor) After(tx *sql.Tx, result *[]interface{}, wslApp *wsl.WSL) error {
+func (this *AuthInterceptor) After(tx *sql.Tx, result *[]interface{}, w http.ResponseWriter,
+	r *http.Request, wslApp *wsl.WSL) error {
 	return nil
 }
 func (this *AuthInterceptor) OnError(err *error) error {
