@@ -53,7 +53,8 @@ func (this *AuthInterceptor) Before(
 		s := strings.Split(authHeader, " ")
 		if len(s) == 2 {
 			tokenString := s[1]
-
+			needToRenewToken := false
+			var sessionKey []byte
 			token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 				if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 					return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
@@ -62,20 +63,18 @@ func (this *AuthInterceptor) Before(
 				exp := token.Claims.(jwt.MapClaims)["exp"]
 				expInSeconds := int64(exp.(float64)) - time.Now().Unix()
 				sessionSeconds := 60 * int64(wslApp.Config.App["session_expire_in_minutes"].(float64))
-				if sessionSeconds-expInSeconds*2 > 0 {
-					fmt.Println("need to renew token")
-				}
+				needToRenewToken = sessionSeconds > expInSeconds*2
 
 				userId := token.Claims.(jwt.MapClaims)["user_id"]
 				if userId == nil {
 					return nil, errors.New("Invalid token")
 				}
 
-				sessionKey, err := getSessionKey(tx, userId.(string))
+				_sessionKey, err := getSessionKey(tx, userId.(string))
 				if err != nil {
 					return nil, err
 				}
-
+				sessionKey = _sessionKey
 				return sessionKey, nil
 			})
 			if err != nil {
@@ -88,6 +87,22 @@ func (this *AuthInterceptor) Before(
 				params["__user_mode"] = fmt.Sprintf("%v", claims["mode"])
 			} else {
 				return errors.New("Authentication failed.")
+			}
+
+			if needToRenewToken {
+				// fmt.Println("Renew token")
+				// fmt.Println(sessionKey)
+
+				expMinutes := wslApp.Config.App["session_expire_in_minutes"].(float64)
+				token.Claims.(jwt.MapClaims)["exp"] = time.Now().Add(time.Minute * time.Duration(expMinutes)).Unix()
+
+				tokenString, err := token.SignedString([]byte(sessionKey))
+				if err != nil {
+					return err
+				}
+				w.Header().Add("token", tokenString)
+
+				// fmt.Println(tokenString)
 			}
 		}
 	}
