@@ -44,6 +44,7 @@ func (this *AuthInterceptor) Before(
 	tx *sql.Tx,
 	script *string,
 	params map[string]string,
+	context map[string]interface{},
 	w http.ResponseWriter,
 	r *http.Request,
 	wslApp *wsl.WSL) error {
@@ -108,8 +109,8 @@ func (this *AuthInterceptor) Before(
 	}
 	return nil
 }
-func (this *AuthInterceptor) After(tx *sql.Tx, result *[]interface{}, w http.ResponseWriter,
-	r *http.Request, wslApp *wsl.WSL) error {
+func (this *AuthInterceptor) After(tx *sql.Tx, result *[]interface{},
+	context map[string]interface{}, w http.ResponseWriter, r *http.Request, wslApp *wsl.WSL) error {
 	return nil
 }
 func (this *AuthInterceptor) OnError(err *error) error {

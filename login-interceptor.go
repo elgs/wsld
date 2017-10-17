@@ -15,13 +15,16 @@ type LoginInterceptor struct {
 }
 
 func (this *LoginInterceptor) Before(tx *sql.Tx, script *string, params map[string]string,
+	context map[string]interface{},
 	w http.ResponseWriter,
 	r *http.Request, wslApp *wsl.WSL) error {
 	params["case"] = "lower"
 	return nil
 }
 
-func (this *LoginInterceptor) After(tx *sql.Tx, result *[]interface{}, w http.ResponseWriter,
+func (this *LoginInterceptor) After(tx *sql.Tx, result *[]interface{},
+	context map[string]interface{},
+	w http.ResponseWriter,
 	r *http.Request, wslApp *wsl.WSL) error {
 	if u, ok := (*result)[0].([]map[string]string); ok && len(u) > 0 {
 		log.Println("Login succeeded.")

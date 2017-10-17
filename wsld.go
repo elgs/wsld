@@ -18,13 +18,20 @@ func main() {
 	}
 
 	// Register a bunch of interceptors
+	registerInterceptors()
+
+	wsld.Start()
+	wsl.Hook()
+}
+
+func registerInterceptors() {
 	wsl.RegisterGlobalInterceptors(&AuthInterceptor{})
 
 	wsl.RegisterQueryInterceptors("load-scripts", &LoadScriptsInterceptor{})
 	wsl.RegisterQueryInterceptors("login", &LoginInterceptor{})
 	wsl.RegisterQueryInterceptors("signup", &SignupInterceptor{})
 	wsl.RegisterQueryInterceptors("forget-password-1", &ForgetPassword1Interceptor{})
-
-	wsld.Start()
-	wsl.Hook()
+	wsl.RegisterQueryInterceptors("forget-password-2", &ResetPasswordInterceptor{})
+	wsl.RegisterQueryInterceptors("reset-password", &ResetPasswordInterceptor{})
+	wsl.RegisterQueryInterceptors("change-password", &ChangePasswordInterceptor{})
 }

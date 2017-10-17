@@ -15,6 +15,7 @@ type SignupInterceptor struct {
 }
 
 func (this *SignupInterceptor) Before(tx *sql.Tx, script *string, params map[string]string,
+	context map[string]interface{},
 	w http.ResponseWriter,
 	r *http.Request, wslApp *wsl.WSL) error {
 	vCode, err := gostrgen.RandGen(8, gostrgen.LowerUpperDigit, "", "lO") // exclude small L and big O
@@ -32,7 +33,9 @@ func (this *SignupInterceptor) Before(tx *sql.Tx, script *string, params map[str
 	return nil
 }
 
-func (this *SignupInterceptor) After(tx *sql.Tx, result *[]interface{}, w http.ResponseWriter,
+func (this *SignupInterceptor) After(tx *sql.Tx, result *[]interface{},
+	context map[string]interface{},
+	w http.ResponseWriter,
 	r *http.Request, wslApp *wsl.WSL) error {
 	if len(*result) == 0 {
 		return errors.New("Failed to sign up.")
