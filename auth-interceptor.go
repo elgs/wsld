@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"net/http"
 	"strings"
 	"time"
 
@@ -45,13 +44,10 @@ func (this *AuthInterceptor) Before(
 	script *string,
 	params map[string]string,
 	context map[string]interface{},
-	w http.ResponseWriter,
-	r *http.Request,
 	wslApp *wsl.WSL) error {
-	headers := wsl.ValuesToMap(r.Header)
-	authHeader := headers["Authorization"]
-	if authHeader != "" {
-		s := strings.Split(authHeader, " ")
+	authHeader := context["Authorization"]
+	if authHeader != nil {
+		s := strings.Split(authHeader.(string), " ")
 		if len(s) == 2 {
 			tokenString := s[1]
 			needToRenewToken := false
@@ -101,7 +97,7 @@ func (this *AuthInterceptor) Before(
 				if err != nil {
 					return err
 				}
-				w.Header().Add("token", tokenString)
+				context["token"] = tokenString
 
 				// fmt.Println(tokenString)
 			}
@@ -110,7 +106,7 @@ func (this *AuthInterceptor) Before(
 	return nil
 }
 func (this *AuthInterceptor) After(tx *sql.Tx, result *[]interface{},
-	context map[string]interface{}, w http.ResponseWriter, r *http.Request, wslApp *wsl.WSL) error {
+	context map[string]interface{}, wslApp *wsl.WSL) error {
 	return nil
 }
 func (this *AuthInterceptor) OnError(err *error) error {

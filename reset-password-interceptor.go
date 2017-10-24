@@ -3,7 +3,6 @@ package main
 import (
 	"database/sql"
 	"errors"
-	"net/http"
 	"strings"
 
 	"github.com/elgs/gosqljson"
@@ -17,8 +16,7 @@ type ResetPasswordInterceptor struct {
 
 func (this *ResetPasswordInterceptor) Before(tx *sql.Tx, script *string, params map[string]string,
 	context map[string]interface{},
-	w http.ResponseWriter,
-	r *http.Request, wslApp *wsl.WSL) error {
+	wslApp *wsl.WSL) error {
 
 	sessionKey, err := gostrgen.RandGen(20, gostrgen.All, "", "")
 	if err != nil {
@@ -32,8 +30,7 @@ func (this *ResetPasswordInterceptor) Before(tx *sql.Tx, script *string, params 
 
 func (this *ResetPasswordInterceptor) After(tx *sql.Tx, result *[]interface{},
 	context map[string]interface{},
-	w http.ResponseWriter,
-	r *http.Request, wslApp *wsl.WSL) error {
+	wslApp *wsl.WSL) error {
 
 	username := context["username"]
 	userData, err := gosqljson.QueryTxToMap(tx, "lower", "SELECT ID FROM USER WHERE USERNAME=? OR EMAIL=?", username, username)

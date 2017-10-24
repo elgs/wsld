@@ -3,7 +3,6 @@ package main
 import (
 	"database/sql"
 	"errors"
-	"net/http"
 	"strings"
 
 	"github.com/elgs/gosqljson"
@@ -17,8 +16,7 @@ type ChangePasswordInterceptor struct {
 
 func (this *ChangePasswordInterceptor) Before(tx *sql.Tx, script *string, params map[string]string,
 	context map[string]interface{},
-	w http.ResponseWriter,
-	r *http.Request, wslApp *wsl.WSL) error {
+	wslApp *wsl.WSL) error {
 
 	sessionKey, err := gostrgen.RandGen(20, gostrgen.All, "", "")
 	if err != nil {
@@ -32,8 +30,7 @@ func (this *ChangePasswordInterceptor) Before(tx *sql.Tx, script *string, params
 
 func (this *ChangePasswordInterceptor) After(tx *sql.Tx, result *[]interface{},
 	context map[string]interface{},
-	w http.ResponseWriter,
-	r *http.Request, wslApp *wsl.WSL) error {
+	wslApp *wsl.WSL) error {
 
 	sessionId := context["session_id"]
 	userData, err := gosqljson.QueryTxToMap(tx, "lower", "SELECT USER_ID FROM USER_SESSION WHERE ID=?", sessionId)

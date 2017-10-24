@@ -3,7 +3,6 @@ package main
 import (
 	"database/sql"
 	"errors"
-	"net/http"
 
 	"github.com/elgs/wsl"
 )
@@ -28,8 +27,7 @@ func loadScripts(config *wsl.Config) ([]string, error) {
 
 func (this *LoadScriptsInterceptor) Before(tx *sql.Tx, script *string, params map[string]string,
 	context map[string]interface{},
-	w http.ResponseWriter,
-	r *http.Request, wslApp *wsl.WSL) error {
+	wslApp *wsl.WSL) error {
 	if params["__user_mode"] == "root" {
 		sn, err := loadScripts(wslApp.Config)
 		scriptNames = sn
@@ -43,8 +41,7 @@ func (this *LoadScriptsInterceptor) Before(tx *sql.Tx, script *string, params ma
 
 func (this *LoadScriptsInterceptor) After(tx *sql.Tx, result *[]interface{},
 	context map[string]interface{},
-	w http.ResponseWriter,
-	r *http.Request, wslApp *wsl.WSL) error {
+	wslApp *wsl.WSL) error {
 	for _, s := range scriptNames {
 		*result = append(*result, s)
 	}

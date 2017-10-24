@@ -3,7 +3,6 @@ package main
 import (
 	"database/sql"
 	"log"
-	"net/http"
 	"time"
 
 	jwt "github.com/dgrijalva/jwt-go"
@@ -16,16 +15,14 @@ type LoginInterceptor struct {
 
 func (this *LoginInterceptor) Before(tx *sql.Tx, script *string, params map[string]string,
 	context map[string]interface{},
-	w http.ResponseWriter,
-	r *http.Request, wslApp *wsl.WSL) error {
+	wslApp *wsl.WSL) error {
 	params["case"] = "lower"
 	return nil
 }
 
 func (this *LoginInterceptor) After(tx *sql.Tx, result *[]interface{},
 	context map[string]interface{},
-	w http.ResponseWriter,
-	r *http.Request, wslApp *wsl.WSL) error {
+	wslApp *wsl.WSL) error {
 	if u, ok := (*result)[0].([]map[string]string); ok && len(u) > 0 {
 		log.Println("Login succeeded.")
 		mapClaims := jwt.MapClaims{}
@@ -47,7 +44,7 @@ func (this *LoginInterceptor) After(tx *sql.Tx, result *[]interface{},
 		if err != nil {
 			return err
 		}
-		w.Header().Add("token", tokenString)
+		context["token"] = tokenString
 	} else {
 		log.Println("Login failed.")
 		return nil
