@@ -9,11 +9,11 @@ import (
 	"github.com/elgs/wsl"
 )
 
-type ForgetPassword1Interceptor struct {
+type ForgetPasswordInterceptor struct {
 	*wsl.DefaultInterceptor
 }
 
-func (this *ForgetPassword1Interceptor) Before(tx *sql.Tx, script *string, params map[string]string,
+func (this *ForgetPasswordInterceptor) Before(tx *sql.Tx, script *string, params map[string]string,
 	context map[string]interface{},
 	wslApp *wsl.WSL) error {
 	vCode, err := gostrgen.RandGen(8, gostrgen.LowerUpperDigit, "", "lO") // exclude small L and big O
@@ -25,7 +25,7 @@ func (this *ForgetPassword1Interceptor) Before(tx *sql.Tx, script *string, param
 	return nil
 }
 
-func (this *ForgetPassword1Interceptor) After(tx *sql.Tx, result *[]interface{},
+func (this *ForgetPasswordInterceptor) After(tx *sql.Tx, result *[]interface{},
 	context map[string]interface{},
 	wslApp *wsl.WSL) error {
 	if len(*result) == 0 {
