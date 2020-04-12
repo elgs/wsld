@@ -28,7 +28,7 @@ func loadScripts(config *wsl.Config) ([]string, error) {
 func (this *LoadScriptsInterceptor) Before(tx *sql.Tx, script *string, params map[string]string,
 	context map[string]interface{},
 	wslApp *wsl.WSL) error {
-	if params["__user_mode"] == "root" {
+	if params["$$user_mode"] == "root" {
 		sn, err := loadScripts(wslApp.Config)
 		scriptNames = sn
 		if err != nil {

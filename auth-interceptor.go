@@ -79,9 +79,9 @@ func (this *AuthInterceptor) Before(
 			}
 
 			if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-				params["__session_id"] = fmt.Sprintf("%v", claims["id"])
-				params["__user_id"] = fmt.Sprintf("%v", claims["user_id"])
-				params["__user_mode"] = fmt.Sprintf("%v", claims["mode"])
+				params["$$session_id"] = fmt.Sprintf("%v", claims["id"])
+				params["$$user_id"] = fmt.Sprintf("%v", claims["user_id"])
+				params["$$user_mode"] = fmt.Sprintf("%v", claims["mode"])
 			} else {
 				return errors.New("Authentication failed.")
 			}

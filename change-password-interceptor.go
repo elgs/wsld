@@ -23,7 +23,7 @@ func (this *ChangePasswordInterceptor) Before(tx *sql.Tx, script *string, params
 		return err
 	}
 	*script = strings.Replace(*script, "$session-key$", sessionKey, 1)
-	sessionId := params["__session_id"]
+	sessionId := params["$$session_id"]
 	context["session_id"] = sessionId
 	return nil
 }
