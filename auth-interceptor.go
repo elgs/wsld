@@ -105,7 +105,7 @@ func (this *AuthInterceptor) Before(
 	}
 	return nil
 }
-func (this *AuthInterceptor) After(tx *sql.Tx, result *[]interface{},
+func (this *AuthInterceptor) After(tx *sql.Tx, result map[string]interface{},
 	context map[string]interface{}, wslApp *wsl.WSL) error {
 	return nil
 }

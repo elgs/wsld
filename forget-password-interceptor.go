@@ -25,13 +25,19 @@ func (this *ForgetPasswordInterceptor) Before(tx *sql.Tx, script *string, params
 	return nil
 }
 
-func (this *ForgetPasswordInterceptor) After(tx *sql.Tx, result *[]interface{},
+func (this *ForgetPasswordInterceptor) After(tx *sql.Tx, result map[string]interface{},
 	context map[string]interface{},
 	wslApp *wsl.WSL) error {
-	if len(*result) == 0 {
+
+	data, ok := result["data"].([]interface{})
+	if !ok {
+		return errors.New("No data is returned.")
+	}
+
+	if len(data) == 0 {
 		return errors.New("Failed get user information")
 	}
-	if userData, ok := (*result)[0].([]map[string]string); ok {
+	if userData, ok := data[0].([]map[string]string); ok {
 		if len(userData) == 0 {
 			return errors.New("Failed get user information")
 		}

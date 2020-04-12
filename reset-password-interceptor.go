@@ -14,9 +14,7 @@ type ResetPasswordInterceptor struct {
 	*wsl.DefaultInterceptor
 }
 
-func (this *ResetPasswordInterceptor) Before(tx *sql.Tx, script *string, params map[string]string,
-	context map[string]interface{},
-	wslApp *wsl.WSL) error {
+func (this *ResetPasswordInterceptor) Before(tx *sql.Tx, script *string, params map[string]string, context map[string]interface{}, wslApp *wsl.WSL) error {
 
 	sessionKey, err := gostrgen.RandGen(20, gostrgen.All, "", "")
 	if err != nil {
@@ -28,7 +26,7 @@ func (this *ResetPasswordInterceptor) Before(tx *sql.Tx, script *string, params 
 	return nil
 }
 
-func (this *ResetPasswordInterceptor) After(tx *sql.Tx, result *[]interface{},
+func (this *ResetPasswordInterceptor) After(tx *sql.Tx, result map[string]interface{},
 	context map[string]interface{},
 	wslApp *wsl.WSL) error {
 

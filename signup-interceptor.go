@@ -31,13 +31,19 @@ func (this *SignupInterceptor) Before(tx *sql.Tx, script *string, params map[str
 	return nil
 }
 
-func (this *SignupInterceptor) After(tx *sql.Tx, result *[]interface{},
+func (this *SignupInterceptor) After(tx *sql.Tx, result map[string]interface{},
 	context map[string]interface{},
 	wslApp *wsl.WSL) error {
-	if len(*result) == 0 {
+
+	data, ok := result["data"].([]interface{})
+	if !ok {
+		return errors.New("No data is returned.")
+	}
+
+	if len(data) == 0 {
 		return errors.New("Failed to sign up.")
 	}
-	if userData, ok := (*result)[0].([]map[string]string); ok {
+	if userData, ok := data[0].([]map[string]string); ok {
 		if len(userData) == 0 {
 			return errors.New("Failed to sign up.")
 		}

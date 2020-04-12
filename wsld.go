@@ -12,11 +12,11 @@ import (
 
 func main() {
 	version := flag.Bool("v", false, "prints version")
-	confFile := flag.String("c", "/etc/myapp/app.json", "Configration file path.")
+	confFile := flag.String("c", "wsld_full.json", "Configration file path.")
 	flag.Parse()
 
 	if *version {
-		fmt.Println("Alpha 20171115")
+		fmt.Println("Alpha 20200412")
 		os.Exit(0)
 	}
 

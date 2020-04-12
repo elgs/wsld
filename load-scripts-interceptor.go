@@ -39,11 +39,17 @@ func (this *LoadScriptsInterceptor) Before(tx *sql.Tx, script *string, params ma
 	return errors.New("No Access")
 }
 
-func (this *LoadScriptsInterceptor) After(tx *sql.Tx, result *[]interface{},
+func (this *LoadScriptsInterceptor) After(tx *sql.Tx, result map[string]interface{},
 	context map[string]interface{},
 	wslApp *wsl.WSL) error {
+
+	data, ok := result["data"].([]interface{})
+	if !ok {
+		return errors.New("No data is returned.")
+	}
+
 	for _, s := range scriptNames {
-		*result = append(*result, s)
+		data = append(data, s)
 	}
 	return nil
 }

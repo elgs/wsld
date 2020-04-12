@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"errors"
 	"log"
 	"time"
 
@@ -20,11 +21,17 @@ func (this *LoginInterceptor) Before(tx *sql.Tx, script *string, params map[stri
 	return nil
 }
 
-func (this *LoginInterceptor) After(tx *sql.Tx, result *[]interface{},
+func (this *LoginInterceptor) After(tx *sql.Tx, result map[string]interface{},
 	context map[string]interface{},
 	wslApp *wsl.WSL) error {
-	if u, ok := (*result)[0].([]map[string]string); ok && len(u) > 0 {
-		log.Println("Login succeeded.")
+
+	data, ok := result["data"].([]interface{})
+	if !ok {
+		return errors.New("No data is returned.")
+	}
+
+	if u, ok := data[0].([]map[string]string); ok && len(u) > 0 {
+		log.Printf("Login succeeded (%v)", u[0]["username"])
 		mapClaims := jwt.MapClaims{}
 		for k, v := range u[0] {
 			mapClaims[k] = v
@@ -44,7 +51,7 @@ func (this *LoginInterceptor) After(tx *sql.Tx, result *[]interface{},
 		if err != nil {
 			return err
 		}
-		context["token"] = tokenString
+		result["token"] = tokenString
 	} else {
 		log.Println("Login failed.")
 		return nil
