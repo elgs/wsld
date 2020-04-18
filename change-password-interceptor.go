@@ -3,10 +3,8 @@ package main
 import (
 	"database/sql"
 	"errors"
-	"strings"
 
 	"github.com/elgs/gosqljson"
-	"github.com/elgs/gostrgen"
 	"github.com/elgs/wsl"
 )
 
@@ -18,11 +16,6 @@ func (this *ChangePasswordInterceptor) Before(tx *sql.Tx, script *string, params
 	context map[string]interface{},
 	wslApp *wsl.WSL) error {
 
-	sessionKey, err := gostrgen.RandGen(20, gostrgen.All, "", "")
-	if err != nil {
-		return err
-	}
-	*script = strings.Replace(*script, "$session-key$", sessionKey, 1)
 	sessionId := params["$$session_id"]
 	context["session_id"] = sessionId
 	return nil
