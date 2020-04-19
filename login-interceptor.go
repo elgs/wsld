@@ -4,9 +4,8 @@ import (
 	"database/sql"
 	"errors"
 	"log"
-	"time"
 
-	jwt "github.com/dgrijalva/jwt-go"
+	"github.com/elgs/jwt"
 	"github.com/elgs/wsl"
 )
 
@@ -32,14 +31,11 @@ func (this *LoginInterceptor) After(tx *sql.Tx, result map[string]interface{},
 
 	if u, ok := data[0].([]map[string]string); ok && len(u) > 0 {
 		log.Printf("Login succeeded (%v)", u[0]["username"])
-		mapClaims := jwt.MapClaims{}
+
+		mapClaims := make(map[string]interface{})
 		for k, v := range u[0] {
 			mapClaims[k] = v
 		}
-
-		expMinutes := wslApp.Config.App["session_expire_in_minutes"].(float64)
-		mapClaims["exp"] = time.Now().Add(time.Minute * time.Duration(expMinutes)).Unix()
-		token := jwt.NewWithClaims(jwt.SigningMethodHS256, mapClaims)
 
 		userId := u[0]["user_id"]
 		sessionKey, err := getSessionKey(tx, userId)
@@ -47,11 +43,13 @@ func (this *LoginInterceptor) After(tx *sql.Tx, result map[string]interface{},
 			return err
 		}
 
-		tokenString, err := token.SignedString([]byte(sessionKey))
+		expMinutes := wslApp.Config.App["session_expire_in_minutes"].(float64)
+		token, err := jwt.Encode(mapClaims, int(expMinutes)*60, sessionKey)
 		if err != nil {
 			return err
 		}
-		result["token"] = tokenString
+
+		result["token"] = token
 	} else {
 		log.Println("Login failed.")
 		return nil
