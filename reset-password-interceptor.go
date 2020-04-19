@@ -14,7 +14,7 @@ type ResetPasswordInterceptor struct {
 
 func (this *ResetPasswordInterceptor) Before(tx *sql.Tx, script *string, params map[string]string, context map[string]interface{}, wslApp *wsl.WSL) error {
 
-	username := params["$0"]
+	username := params["_0"]
 	context["username"] = username
 	return nil
 }

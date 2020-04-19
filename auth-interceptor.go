@@ -41,9 +41,7 @@ func (this *AuthInterceptor) Before(
 	params map[string]string,
 	context map[string]interface{},
 	wslApp *wsl.WSL) error {
-	if tokenString, ok := context["Authorization"].(string); ok {
-		// needToRenewToken := false
-
+	if tokenString, ok := context["access_token"].(string); ok {
 		claims, err := jwt.Decode(tokenString)
 		userId := claims["user_id"]
 		sessionKey, err := getSessionKey(tx, userId.(string))
@@ -52,51 +50,9 @@ func (this *AuthInterceptor) Before(
 			return errors.New("Invalid token.")
 		}
 
-		// token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		// 	if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-		// 		return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
-		// 	}
-
-		// 	exp := token.Claims.(jwt.MapClaims)["exp"]
-		// 	expInSeconds := int64(exp.(float64)) - time.Now().Unix()
-		// 	sessionSeconds := 60 * int64(wslApp.Config.App["session_expire_in_minutes"].(float64))
-		// 	needToRenewToken = sessionSeconds > expInSeconds*2
-
-		// 	userId := token.Claims.(jwt.MapClaims)["user_id"]
-		// 	if userId == nil {
-		// 		return nil, errors.New("Invalid token")
-		// 	}
-
-		// 	_sessionKey, err := getSessionKey(tx, userId.(string))
-		// 	if err != nil {
-		// 		return nil, err
-		// 	}
-		// 	sessionKey = _sessionKey
-		// 	return sessionKey, nil
-		// })
-		// if err != nil {
-		// 	return err
-		// }
-
-		params["$$session_id"] = fmt.Sprintf("%v", claims["id"])
-		params["$$user_id"] = fmt.Sprintf("%v", claims["user_id"])
-		params["$$user_mode"] = fmt.Sprintf("%v", claims["mode"])
-
-		// if needToRenewToken {
-		// 	// fmt.Println("Renew token")
-		// 	// fmt.Println(sessionKey)
-
-		// 	expMinutes := wslApp.Config.App["session_expire_in_minutes"].(float64)
-		// 	token.Claims.(jwt.MapClaims)["exp"] = time.Now().Add(time.Minute * time.Duration(expMinutes)).Unix()
-
-		// 	tokenString, err := token.SignedString([]byte(sessionKey))
-		// 	if err != nil {
-		// 		return err
-		// 	}
-		// 	context["token"] = tokenString
-
-		// 	// fmt.Println(tokenString)
-		// }
+		params["__session_id"] = fmt.Sprintf("%v", claims["id"])
+		params["__user_id"] = fmt.Sprintf("%v", claims["user_id"])
+		params["__user_mode"] = fmt.Sprintf("%v", claims["mode"])
 	}
 	return nil
 }

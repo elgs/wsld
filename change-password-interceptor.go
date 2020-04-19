@@ -16,7 +16,7 @@ func (this *ChangePasswordInterceptor) Before(tx *sql.Tx, script *string, params
 	context map[string]interface{},
 	wslApp *wsl.WSL) error {
 
-	sessionId := params["$$session_id"]
+	sessionId := params["__session_id"]
 	context["session_id"] = sessionId
 	return nil
 }
