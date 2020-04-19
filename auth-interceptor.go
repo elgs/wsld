@@ -19,21 +19,20 @@ type AuthInterceptor struct {
 func getSessionKey(tx *sql.Tx, userId string) (string, error) {
 	if val, ok := userKeys[userId]; ok {
 		return val, nil
-	} else {
-		dbResult, err := gosqljson.QueryTxToMap(tx, "lower", "SELECT PASSWORD FROM USER WHERE ID=?", userId)
-		if err != nil {
-			return "", err
-		}
-		if len(dbResult) != 1 {
-			return "", errors.New("User not found.")
-		}
-		sessionKey := dbResult[0]["password"]
-		if sessionKey == "" {
-			return "", errors.New("Session key is empty.")
-		}
-		userKeys[userId] = sessionKey
-		return sessionKey, nil
 	}
+	dbResult, err := gosqljson.QueryTxToMap(tx, "lower", "SELECT PASSWORD FROM USER WHERE ID=?", userId)
+	if err != nil {
+		return "", err
+	}
+	if len(dbResult) != 1 {
+		return "", errors.New("User not found.")
+	}
+	sessionKey := dbResult[0]["password"]
+	if sessionKey == "" {
+		return "", errors.New("Session key is empty.")
+	}
+	userKeys[userId] = sessionKey
+	return sessionKey, nil
 }
 
 func (this *AuthInterceptor) Before(
