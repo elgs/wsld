@@ -32,9 +32,8 @@ func (this *LoginInterceptor) After(tx *sql.Tx, result map[string]interface{},
 	if u, ok := data[0].([]map[string]string); ok && len(u) > 0 {
 		log.Printf("Login succeeded (%v)", u[0]["username"])
 
-		mapClaims := make(map[string]interface{})
-		for k, v := range u[0] {
-			mapClaims[k] = v
+		mapClaims := map[string]interface{}{
+			"user_id": u[0]["user_id"],
 		}
 
 		userId := u[0]["user_id"]
