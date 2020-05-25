@@ -14,16 +14,21 @@ type ResetPasswordInterceptor struct {
 
 func (this *ResetPasswordInterceptor) Before(tx *sql.Tx, script *string, params map[string]string, context map[string]interface{}, wslApp *wsl.WSL) error {
 
-	username := params["_0"]
-	context["username"] = username
+	if context["session_id"] == "" {
+		return errors.New("Invalid token.")
+	}
+
 	return nil
 }
 
-func (this *ResetPasswordInterceptor) After(tx *sql.Tx, result map[string]interface{},
+func (this *ResetPasswordInterceptor) After(
+	tx *sql.Tx,
+	params map[string]string,
+	result map[string]interface{},
 	context map[string]interface{},
 	wslApp *wsl.WSL) error {
 
-	username := context["username"]
+	username := params["_0"]
 	userData, err := gosqljson.QueryTxToMap(tx, "lower", "SELECT ID FROM USER WHERE USERNAME=? OR EMAIL=?", username, username)
 	if err != nil {
 		return err

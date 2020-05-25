@@ -25,7 +25,7 @@ func (this *ForgetPasswordInterceptor) Before(tx *sql.Tx, script *string, params
 	return nil
 }
 
-func (this *ForgetPasswordInterceptor) After(tx *sql.Tx, result map[string]interface{},
+func (this *ForgetPasswordInterceptor) After(tx *sql.Tx, params map[string]string, result map[string]interface{},
 	context map[string]interface{},
 	wslApp *wsl.WSL) error {
 

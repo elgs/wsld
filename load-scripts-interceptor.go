@@ -39,7 +39,7 @@ func (this *LoadScriptsInterceptor) Before(tx *sql.Tx, script *string, params ma
 	return errors.New("No Access")
 }
 
-func (this *LoadScriptsInterceptor) After(tx *sql.Tx, result map[string]interface{},
+func (this *LoadScriptsInterceptor) After(tx *sql.Tx, params map[string]string, result map[string]interface{},
 	context map[string]interface{},
 	wslApp *wsl.WSL) error {
 

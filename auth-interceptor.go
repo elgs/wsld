@@ -11,6 +11,7 @@ import (
 )
 
 var userKeys = make(map[string]string)
+var userSessionIds = make(map[string]bool)
 
 type AuthInterceptor struct {
 	*wsl.DefaultInterceptor
@@ -35,6 +36,21 @@ func getSessionKey(tx *sql.Tx, userId string) (string, error) {
 	return sessionKey, nil
 }
 
+func getSessionId(tx *sql.Tx, sessionId string) (bool, error) {
+	if val, ok := userSessionIds[sessionId]; ok {
+		return val, nil
+	}
+	dbResult, err := gosqljson.QueryTxToMap(tx, "lower", "SELECT ID FROM USER_SESSION WHERE ID=? AND NOT JSON_CONTAINS_PATH(STATUS, 'one', '$.pfv');", sessionId)
+	if err != nil {
+		return false, err
+	}
+	if len(dbResult) != 1 {
+		return false, errors.New("Session not found.")
+	}
+	userSessionIds[sessionId] = true
+	return true, nil
+}
+
 func (this *AuthInterceptor) Before(
 	tx *sql.Tx,
 	script *string,
@@ -44,19 +60,28 @@ func (this *AuthInterceptor) Before(
 	if tokenString, ok := context["access_token"].(string); ok {
 		claims, err := jwt.Decode(tokenString)
 		userId := claims["user_id"]
-		sessionKey, err := getSessionKey(tx, userId.(string))
-		verified, err := jwt.Verify(tokenString, sessionKey)
-		if !verified || err != nil {
+		sessionId := claims["id"].(string)
+		hasSessionId, err := getSessionId(tx, sessionId)
+		if !hasSessionId || err != nil {
 			return errors.New("Invalid token.")
 		}
 
-		params["__session_id"] = fmt.Sprintf("%v", claims["id"])
-		params["__user_id"] = fmt.Sprintf("%v", claims["user_id"])
+		sessionKey, err := getSessionKey(tx, userId.(string))
+		verified, err := jwt.Verify(tokenString, sessionKey)
+		if !verified || err != nil {
+			return errors.New("Invalid key.")
+		}
+
+		params["__session_id"] = fmt.Sprintf("%v", sessionId)
+		params["__user_id"] = fmt.Sprintf("%v", userId)
 		params["__user_mode"] = fmt.Sprintf("%v", claims["mode"])
+
+		// signify token is verified, token interceptors could check context["session_id"] for whether token is verified, or ignore for public apis.
+		context["session_id"] = sessionId
 	}
 	return nil
 }
-func (this *AuthInterceptor) After(tx *sql.Tx, result map[string]interface{},
+func (this *AuthInterceptor) After(tx *sql.Tx, params map[string]string, result map[string]interface{},
 	context map[string]interface{}, wslApp *wsl.WSL) error {
 	return nil
 }

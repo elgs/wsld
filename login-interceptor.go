@@ -20,7 +20,7 @@ func (this *LoginInterceptor) Before(tx *sql.Tx, script *string, params map[stri
 	return nil
 }
 
-func (this *LoginInterceptor) After(tx *sql.Tx, result map[string]interface{},
+func (this *LoginInterceptor) After(tx *sql.Tx, params map[string]string, result map[string]interface{},
 	context map[string]interface{},
 	wslApp *wsl.WSL) error {
 

@@ -26,7 +26,10 @@ func (this *SignupInterceptor) Before(tx *sql.Tx, script *string, params map[str
 	return nil
 }
 
-func (this *SignupInterceptor) After(tx *sql.Tx, result map[string]interface{},
+func (this *SignupInterceptor) After(
+	tx *sql.Tx,
+	params map[string]string,
+	result map[string]interface{},
 	context map[string]interface{},
 	wslApp *wsl.WSL) error {
 

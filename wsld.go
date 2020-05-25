@@ -37,6 +37,7 @@ func registerInterceptors() {
 
 	wsl.RegisterQueryInterceptors("load-scripts", &LoadScriptsInterceptor{})
 	wsl.RegisterQueryInterceptors("login", &LoginInterceptor{})
+	wsl.RegisterQueryInterceptors("logout", &LogoutInterceptor{})
 	wsl.RegisterQueryInterceptors("signup", &SignupInterceptor{})
 	wsl.RegisterQueryInterceptors("forget-password-send-code", &ForgetPasswordInterceptor{})
 	wsl.RegisterQueryInterceptors("forget-password-verify-code", &ResetPasswordInterceptor{})

@@ -16,16 +16,18 @@ func (this *ChangePasswordInterceptor) Before(tx *sql.Tx, script *string, params
 	context map[string]interface{},
 	wslApp *wsl.WSL) error {
 
-	sessionId := params["__session_id"]
-	context["session_id"] = sessionId
+	if context["session_id"] == "" {
+		return errors.New("Invalid token.")
+	}
+
 	return nil
 }
 
-func (this *ChangePasswordInterceptor) After(tx *sql.Tx, result map[string]interface{},
+func (this *ChangePasswordInterceptor) After(tx *sql.Tx, params map[string]string, result map[string]interface{},
 	context map[string]interface{},
 	wslApp *wsl.WSL) error {
 
-	sessionId := context["session_id"]
+	sessionId := params["__session_id"]
 	userData, err := gosqljson.QueryTxToMap(tx, "lower", "SELECT USER_ID FROM USER_SESSION WHERE ID=?", sessionId)
 	if err != nil {
 		return err
