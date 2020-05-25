@@ -34,6 +34,8 @@ func (this *LoginInterceptor) After(tx *sql.Tx, result map[string]interface{},
 
 		mapClaims := map[string]interface{}{
 			"user_id": u[0]["user_id"],
+			"id":      u[0]["id"],
+			"mode":    u[0]["mode"],
 		}
 
 		userId := u[0]["user_id"]
