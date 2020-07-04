@@ -51,11 +51,12 @@ func getSessionId(tx *sql.Tx, sessionId string) (bool, error) {
 	return true, nil
 }
 
-func (this *AuthInterceptor) Before(
+func (this *AuthInterceptor) BeforeEach(
 	tx *sql.Tx,
 	script *string,
 	params map[string]string,
 	context map[string]interface{},
+	index int,
 	wslApp *wsl.WSL) error {
 	if tokenString, ok := context["access_token"].(string); ok {
 		claims, err := jwt.Decode(tokenString)
@@ -81,8 +82,8 @@ func (this *AuthInterceptor) Before(
 	}
 	return nil
 }
-func (this *AuthInterceptor) After(tx *sql.Tx, params map[string]string, result interface{},
-	context map[string]interface{}, wslApp *wsl.WSL) error {
+func (this *AuthInterceptor) AfterEach(tx *sql.Tx, params map[string]string, result interface{},
+	context map[string]interface{}, index int, wslApp *wsl.WSL) error {
 	return nil
 }
 func (this *AuthInterceptor) OnError(err *error) error {

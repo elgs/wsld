@@ -11,8 +11,8 @@ type LogoutInterceptor struct {
 	*wsl.DefaultInterceptor
 }
 
-func (this *LogoutInterceptor) Before(tx *sql.Tx, script *string, params map[string]string,
-	context map[string]interface{},
+func (this *LogoutInterceptor) BeforeEach(tx *sql.Tx, script *string, params map[string]string,
+	context map[string]interface{}, index int,
 	wslApp *wsl.WSL) error {
 
 	if context["session_id"] == "" {
@@ -22,11 +22,12 @@ func (this *LogoutInterceptor) Before(tx *sql.Tx, script *string, params map[str
 	return nil
 }
 
-func (this *LogoutInterceptor) After(
+func (this *LogoutInterceptor) AfterEach(
 	tx *sql.Tx,
 	params map[string]string,
 	result interface{},
 	context map[string]interface{},
+	index int,
 	wslApp *wsl.WSL) error {
 
 	userId := params["user_id"]

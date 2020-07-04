@@ -12,8 +12,8 @@ type ChangePasswordInterceptor struct {
 	*wsl.DefaultInterceptor
 }
 
-func (this *ChangePasswordInterceptor) Before(tx *sql.Tx, script *string, params map[string]string,
-	context map[string]interface{},
+func (this *ChangePasswordInterceptor) BeforeEach(tx *sql.Tx, script *string, params map[string]string,
+	context map[string]interface{}, index int,
 	wslApp *wsl.WSL) error {
 
 	if context["session_id"] == "" {
@@ -23,8 +23,8 @@ func (this *ChangePasswordInterceptor) Before(tx *sql.Tx, script *string, params
 	return nil
 }
 
-func (this *ChangePasswordInterceptor) After(tx *sql.Tx, params map[string]string, result interface{},
-	context map[string]interface{},
+func (this *ChangePasswordInterceptor) AfterEach(tx *sql.Tx, params map[string]string, result interface{},
+	context map[string]interface{}, index int,
 	wslApp *wsl.WSL) error {
 
 	sessionId := params["__session_id"]

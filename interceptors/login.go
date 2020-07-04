@@ -2,6 +2,7 @@ package interceptors
 
 import (
 	"database/sql"
+	"fmt"
 
 	"github.com/elgs/wsl"
 )
@@ -10,9 +11,36 @@ type LoginInterceptor struct {
 	*wsl.DefaultInterceptor
 }
 
-func (this *LoginInterceptor) After(tx *sql.Tx, params map[string]string, result interface{},
-	context map[string]interface{},
-	wslApp *wsl.WSL) error {
+func (this *LoginInterceptor) Before(tx *sql.Tx, script *string, params map[string]string, context map[string]interface{}, wslApp *wsl.WSL) error {
+
+	fmt.Println("Before")
+	return nil
+}
+
+func (this *LoginInterceptor) After(tx *sql.Tx, params map[string]string, result interface{}, context map[string]interface{}, wslApp *wsl.WSL) error {
+
+	fmt.Println("After")
+	return nil
+}
+
+func (this *LoginInterceptor) BeforeEach(tx *sql.Tx, script *string, params map[string]string, context map[string]interface{}, index int, wslApp *wsl.WSL) error {
+
+	fmt.Println("BeforeEach")
+	fmt.Println(*script)
+	fmt.Println(params)
+	fmt.Println(context)
+	fmt.Println(index)
+	return nil
+}
+
+func (this *LoginInterceptor) AfterEach(tx *sql.Tx, params map[string]string, result interface{}, context map[string]interface{}, index int, wslApp *wsl.WSL) error {
+
+	fmt.Println("AfterEach")
+	fmt.Println(params)
+	fmt.Println(result)
+	fmt.Println(context)
+	fmt.Println(index)
+	fmt.Println("====================================")
 
 	// if session, ok := data[1].([]map[string]string); ok && len(session) > 0 {
 	// 	result["session_id"] = session[0]["session_id"]
