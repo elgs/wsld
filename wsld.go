@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/elgs/wsl"
+	"github.com/elgs/wsld/interceptors"
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -33,14 +34,14 @@ func main() {
 }
 
 func registerInterceptors() {
-	wsl.RegisterGlobalInterceptors(&AuthInterceptor{})
+	wsl.RegisterGlobalInterceptors(&interceptors.AuthInterceptor{})
 
-	wsl.RegisterQueryInterceptors("load-scripts", &LoadScriptsInterceptor{})
-	wsl.RegisterQueryInterceptors("login", &LoginInterceptor{})
-	wsl.RegisterQueryInterceptors("logout", &LogoutInterceptor{})
-	wsl.RegisterQueryInterceptors("signup", &SignupInterceptor{})
-	wsl.RegisterQueryInterceptors("forget-password-send-code", &ForgetPasswordInterceptor{})
-	wsl.RegisterQueryInterceptors("forget-password-verify-code", &ResetPasswordInterceptor{})
-	wsl.RegisterQueryInterceptors("reset-password", &ResetPasswordInterceptor{})
-	wsl.RegisterQueryInterceptors("change-password", &ChangePasswordInterceptor{})
+	wsl.RegisterQueryInterceptors("load-scripts", &interceptors.LoadScriptsInterceptor{})
+	wsl.RegisterQueryInterceptors("login", &interceptors.LoginInterceptor{})
+	wsl.RegisterQueryInterceptors("logout", &interceptors.LogoutInterceptor{})
+	wsl.RegisterQueryInterceptors("session", &interceptors.SessionInterceptor{})
+	wsl.RegisterQueryInterceptors("forget-password-send-code", &interceptors.ForgetPasswordInterceptor{})
+	wsl.RegisterQueryInterceptors("forget-password-verify-code", &interceptors.ResetPasswordInterceptor{})
+	wsl.RegisterQueryInterceptors("reset-password", &interceptors.ResetPasswordInterceptor{})
+	wsl.RegisterQueryInterceptors("change-password", &interceptors.ChangePasswordInterceptor{})
 }

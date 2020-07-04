@@ -1,4 +1,4 @@
-package main
+package interceptors
 
 import (
 	"database/sql"
@@ -24,7 +24,7 @@ func (this *ResetPasswordInterceptor) Before(tx *sql.Tx, script *string, params 
 func (this *ResetPasswordInterceptor) After(
 	tx *sql.Tx,
 	params map[string]string,
-	result map[string]interface{},
+	result interface{},
 	context map[string]interface{},
 	wslApp *wsl.WSL) error {
 

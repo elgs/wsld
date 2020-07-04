@@ -1,4 +1,4 @@
-package main
+package interceptors
 
 import (
 	"database/sql"
@@ -25,7 +25,7 @@ func (this *LogoutInterceptor) Before(tx *sql.Tx, script *string, params map[str
 func (this *LogoutInterceptor) After(
 	tx *sql.Tx,
 	params map[string]string,
-	result map[string]interface{},
+	result interface{},
 	context map[string]interface{},
 	wslApp *wsl.WSL) error {
 

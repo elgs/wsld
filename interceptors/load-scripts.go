@@ -1,4 +1,4 @@
-package main
+package interceptors
 
 import (
 	"database/sql"
@@ -14,7 +14,7 @@ type LoadScriptsInterceptor struct {
 var scriptNames []string
 
 func loadScripts(config *wsl.Config) ([]string, error) {
-	err := config.LoadScripts()
+	err := config.LoadScripts("")
 	scriptNames := make([]string, len(config.Db.Scripts))
 
 	i := 0
@@ -39,17 +39,17 @@ func (this *LoadScriptsInterceptor) Before(tx *sql.Tx, script *string, params ma
 	return errors.New("No Access")
 }
 
-func (this *LoadScriptsInterceptor) After(tx *sql.Tx, params map[string]string, result map[string]interface{},
+func (this *LoadScriptsInterceptor) After(tx *sql.Tx, params map[string]string, result interface{},
 	context map[string]interface{},
 	wslApp *wsl.WSL) error {
 
-	data, ok := result["data"].([]interface{})
-	if !ok {
-		return errors.New("No data is returned.")
-	}
+	// data, ok := result["data"].([]interface{})
+	// if !ok {
+	// 	return errors.New("No data is returned.")
+	// }
 
-	for _, s := range scriptNames {
-		data = append(data, s)
-	}
+	// for _, s := range scriptNames {
+	// 	data = append(data, s)
+	// }
 	return nil
 }

@@ -1,4 +1,4 @@
-package main
+package interceptors
 
 import (
 	"database/sql"
@@ -81,7 +81,7 @@ func (this *AuthInterceptor) Before(
 	}
 	return nil
 }
-func (this *AuthInterceptor) After(tx *sql.Tx, params map[string]string, result map[string]interface{},
+func (this *AuthInterceptor) After(tx *sql.Tx, params map[string]string, result interface{},
 	context map[string]interface{}, wslApp *wsl.WSL) error {
 	return nil
 }
