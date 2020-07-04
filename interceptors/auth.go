@@ -51,13 +51,7 @@ func getSessionId(tx *sql.Tx, sessionId string) (bool, error) {
 	return true, nil
 }
 
-func (this *AuthInterceptor) BeforeEach(
-	tx *sql.Tx,
-	script *string,
-	params map[string]string,
-	context map[string]interface{},
-	index int,
-	wslApp *wsl.WSL) error {
+func (this *AuthInterceptor) Before(tx *sql.Tx, script *string, params map[string]string, context map[string]interface{}, wslApp *wsl.WSL) error {
 	if tokenString, ok := context["access_token"].(string); ok {
 		claims, err := jwt.Decode(tokenString)
 		userId := claims["user_id"]
@@ -80,6 +74,16 @@ func (this *AuthInterceptor) BeforeEach(
 		// signify token is verified, token interceptors could check context["session_id"] for whether token is verified, or ignore for public apis.
 		context["session_id"] = sessionId
 	}
+	return nil
+}
+
+func (this *AuthInterceptor) BeforeEach(
+	tx *sql.Tx,
+	script *string,
+	sqlParams []interface{},
+	context map[string]interface{},
+	index int,
+	wslApp *wsl.WSL) error {
 	return nil
 }
 func (this *AuthInterceptor) AfterEach(tx *sql.Tx, params map[string]string, result interface{},

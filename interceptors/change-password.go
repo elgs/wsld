@@ -12,7 +12,7 @@ type ChangePasswordInterceptor struct {
 	*wsl.DefaultInterceptor
 }
 
-func (this *ChangePasswordInterceptor) BeforeEach(tx *sql.Tx, script *string, params map[string]string,
+func (this *ChangePasswordInterceptor) BeforeEach(tx *sql.Tx, script *string, sqlParams []interface{},
 	context map[string]interface{}, index int,
 	wslApp *wsl.WSL) error {
 

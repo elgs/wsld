@@ -11,7 +11,7 @@ type LogoutInterceptor struct {
 	*wsl.DefaultInterceptor
 }
 
-func (this *LogoutInterceptor) BeforeEach(tx *sql.Tx, script *string, params map[string]string,
+func (this *LogoutInterceptor) BeforeEach(tx *sql.Tx, script *string, sqlParams []interface{},
 	context map[string]interface{}, index int,
 	wslApp *wsl.WSL) error {
 

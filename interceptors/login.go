@@ -23,11 +23,11 @@ func (this *LoginInterceptor) After(tx *sql.Tx, params map[string]string, result
 	return nil
 }
 
-func (this *LoginInterceptor) BeforeEach(tx *sql.Tx, script *string, params map[string]string, context map[string]interface{}, index int, wslApp *wsl.WSL) error {
+func (this *LoginInterceptor) BeforeEach(tx *sql.Tx, script *string, sqlParams []interface{}, context map[string]interface{}, index int, wslApp *wsl.WSL) error {
 
 	fmt.Println("BeforeEach")
 	fmt.Println(*script)
-	fmt.Println(params)
+	fmt.Println(sqlParams)
 	fmt.Println(context)
 	fmt.Println(index)
 	return nil

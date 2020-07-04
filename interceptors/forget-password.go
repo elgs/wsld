@@ -12,7 +12,7 @@ type ForgetPasswordInterceptor struct {
 	*wsl.DefaultInterceptor
 }
 
-func (this *ForgetPasswordInterceptor) BeforeEach(tx *sql.Tx, script *string, params map[string]string,
+func (this *ForgetPasswordInterceptor) BeforeEach(tx *sql.Tx, script *string, sqlParams []interface{},
 	context map[string]interface{}, index int,
 	wslApp *wsl.WSL) error {
 	vCode, err := gostrgen.RandGen(8, gostrgen.LowerUpperDigit, "", "lO") // exclude small L and big O
@@ -20,7 +20,6 @@ func (this *ForgetPasswordInterceptor) BeforeEach(tx *sql.Tx, script *string, pa
 		return err
 	}
 	*script = strings.Replace(*script, "$recovering-password$", vCode, 1)
-	params["case"] = "lower"
 	return nil
 }
 
