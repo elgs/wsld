@@ -14,13 +14,13 @@ type ChangePasswordInterceptor struct {
 
 func (this *ChangePasswordInterceptor) BeforeEach(tx *sql.Tx, script *string, sqlParams []interface{},
 	context map[string]interface{}, index int,
-	wslApp *wsl.WSL) error {
+	wslApp *wsl.WSL) (bool, error) {
 
 	if context["session_id"] == "" {
-		return errors.New("Invalid token.")
+		return false, errors.New("Invalid token.")
 	}
 
-	return nil
+	return false, nil
 }
 
 func (this *ChangePasswordInterceptor) AfterEach(tx *sql.Tx, params map[string]string, result interface{},

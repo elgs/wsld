@@ -14,13 +14,13 @@ type ForgetPasswordInterceptor struct {
 
 func (this *ForgetPasswordInterceptor) BeforeEach(tx *sql.Tx, script *string, sqlParams []interface{},
 	context map[string]interface{}, index int,
-	wslApp *wsl.WSL) error {
+	wslApp *wsl.WSL) (bool, error) {
 	vCode, err := gostrgen.RandGen(8, gostrgen.LowerUpperDigit, "", "lO") // exclude small L and big O
 	if err != nil {
-		return err
+		return false, err
 	}
 	*script = strings.Replace(*script, "$recovering-password$", vCode, 1)
-	return nil
+	return false, nil
 }
 
 func (this *ForgetPasswordInterceptor) AfterEach(tx *sql.Tx, params map[string]string, result interface{},

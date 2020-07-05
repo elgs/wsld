@@ -83,8 +83,8 @@ func (this *AuthInterceptor) BeforeEach(
 	sqlParams []interface{},
 	context map[string]interface{},
 	index int,
-	wslApp *wsl.WSL) error {
-	return nil
+	wslApp *wsl.WSL) (bool, error) {
+	return false, nil
 }
 func (this *AuthInterceptor) AfterEach(tx *sql.Tx, params map[string]string, result interface{},
 	context map[string]interface{}, index int, wslApp *wsl.WSL) error {

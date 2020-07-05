@@ -15,10 +15,10 @@ var scriptNames []string
 
 func loadScripts(config *wsl.Config) ([]string, error) {
 	err := config.LoadScripts("")
-	scriptNames := make([]string, len(config.Db.Scripts))
+	scriptNames := make([]string, len(config.App["scripts"].(map[string]interface{})))
 
 	i := 0
-	for k := range config.Db.Scripts {
+	for k := range config.App["scripts"].(map[string]interface{}) {
 		scriptNames[i] = k
 		i++
 	}
@@ -39,8 +39,8 @@ func (this *LoadScriptsInterceptor) Before(tx *sql.Tx, script *string, params ma
 
 func (this *LoadScriptsInterceptor) BeforeEach(tx *sql.Tx, script *string, sqlParams []interface{},
 	context map[string]interface{}, index int,
-	wslApp *wsl.WSL) error {
-	return nil
+	wslApp *wsl.WSL) (bool, error) {
+	return false, nil
 }
 
 func (this *LoadScriptsInterceptor) AfterEach(tx *sql.Tx, params map[string]string, result interface{},
