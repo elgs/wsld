@@ -10,19 +10,7 @@ type LoginInterceptor struct {
 	*wsl.DefaultInterceptor
 }
 
-func (this *LoginInterceptor) Before(tx *sql.Tx, script *string, params map[string]string, context map[string]interface{}, wslApp *wsl.WSL) error {
-
-	// fmt.Println("Before")
-	return nil
-}
-
-func (this *LoginInterceptor) After(tx *sql.Tx, params map[string]string, result interface{}, context map[string]interface{}, wslApp *wsl.WSL) error {
-
-	// fmt.Println("After")
-	return nil
-}
-
-func (this *LoginInterceptor) BeforeEach(tx *sql.Tx, script *string, sqlParams []interface{}, context map[string]interface{}, index int, wslApp *wsl.WSL) (bool, error) {
+func (this *LoginInterceptor) BeforeEach(tx *sql.Tx, context map[string]interface{}, script *string, sqlParams []interface{}, scriptIndex int) (bool, error) {
 
 	// fmt.Println("BeforeEach")
 	// fmt.Println(*script)
@@ -32,7 +20,7 @@ func (this *LoginInterceptor) BeforeEach(tx *sql.Tx, script *string, sqlParams [
 	return false, nil
 }
 
-func (this *LoginInterceptor) AfterEach(tx *sql.Tx, params map[string]string, result interface{}, context map[string]interface{}, index int, wslApp *wsl.WSL) error {
+func (this *LoginInterceptor) AfterEach(tx *sql.Tx, context map[string]interface{}, result interface{}, scriptIndex int) error {
 
 	// fmt.Println("AfterEach")
 	// fmt.Println(params)

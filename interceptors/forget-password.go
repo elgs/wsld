@@ -12,9 +12,7 @@ type ForgetPasswordInterceptor struct {
 	*wsl.DefaultInterceptor
 }
 
-func (this *ForgetPasswordInterceptor) BeforeEach(tx *sql.Tx, script *string, sqlParams []interface{},
-	context map[string]interface{}, index int,
-	wslApp *wsl.WSL) (bool, error) {
+func (this *ForgetPasswordInterceptor) BeforeEach(tx *sql.Tx, context map[string]interface{}, script *string, sqlParams []interface{}, scriptIndex int) (bool, error) {
 	vCode, err := gostrgen.RandGen(8, gostrgen.LowerUpperDigit, "", "lO") // exclude small L and big O
 	if err != nil {
 		return false, err
@@ -23,9 +21,7 @@ func (this *ForgetPasswordInterceptor) BeforeEach(tx *sql.Tx, script *string, sq
 	return false, nil
 }
 
-func (this *ForgetPasswordInterceptor) AfterEach(tx *sql.Tx, params map[string]string, result interface{},
-	context map[string]interface{}, index int,
-	wslApp *wsl.WSL) error {
+func (this *ForgetPasswordInterceptor) AfterEach(tx *sql.Tx, context map[string]interface{}, result interface{}, scriptIndex int) error {
 
 	// if userData, ok := data[0].([]map[string]string); ok {
 	// 	if len(userData) == 0 {

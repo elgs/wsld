@@ -51,7 +51,10 @@ func getSessionId(tx *sql.Tx, sessionId string) (bool, error) {
 	return true, nil
 }
 
-func (this *AuthInterceptor) Before(tx *sql.Tx, script *string, params map[string]string, context map[string]interface{}, wslApp *wsl.WSL) error {
+func (this *AuthInterceptor) Before(tx *sql.Tx, context map[string]interface{}) error {
+
+	params := context["params"].(map[string]interface{})
+
 	if tokenString, ok := context["access_token"].(string); ok {
 		claims, err := jwt.Decode(tokenString)
 		userId := claims["user_id"]
@@ -77,17 +80,10 @@ func (this *AuthInterceptor) Before(tx *sql.Tx, script *string, params map[strin
 	return nil
 }
 
-func (this *AuthInterceptor) BeforeEach(
-	tx *sql.Tx,
-	script *string,
-	sqlParams []interface{},
-	context map[string]interface{},
-	index int,
-	wslApp *wsl.WSL) (bool, error) {
+func (this *AuthInterceptor) BeforeEach(tx *sql.Tx, context map[string]interface{}, script *string, sqlParams []interface{}, scriptIndex int) (bool, error) {
 	return false, nil
 }
-func (this *AuthInterceptor) AfterEach(tx *sql.Tx, params map[string]string, result interface{},
-	context map[string]interface{}, index int, wslApp *wsl.WSL) error {
+func (this *AuthInterceptor) AfterEach(tx *sql.Tx, context map[string]interface{}, result interface{}, scriptIndex int) error {
 	return nil
 }
 func (this *AuthInterceptor) OnError(err *error) error {

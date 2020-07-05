@@ -12,9 +12,7 @@ type ChangePasswordInterceptor struct {
 	*wsl.DefaultInterceptor
 }
 
-func (this *ChangePasswordInterceptor) BeforeEach(tx *sql.Tx, script *string, sqlParams []interface{},
-	context map[string]interface{}, index int,
-	wslApp *wsl.WSL) (bool, error) {
+func (this *ChangePasswordInterceptor) BeforeEach(tx *sql.Tx, context map[string]interface{}, script *string, sqlParams []interface{}, scriptIndex int) (bool, error) {
 
 	if context["session_id"] == "" {
 		return false, errors.New("Invalid token.")
@@ -23,9 +21,8 @@ func (this *ChangePasswordInterceptor) BeforeEach(tx *sql.Tx, script *string, sq
 	return false, nil
 }
 
-func (this *ChangePasswordInterceptor) AfterEach(tx *sql.Tx, params map[string]string, result interface{},
-	context map[string]interface{}, index int,
-	wslApp *wsl.WSL) error {
+func (this *ChangePasswordInterceptor) AfterEach(tx *sql.Tx, context map[string]interface{}, result interface{}, scriptIndex int) error {
+	params := context["params"].(map[string]interface{})
 
 	sessionId := params["__session_id"]
 	userData, err := gosqljson.QueryTxToMap(tx, "lower", "SELECT USER_ID FROM USER_SESSION WHERE ID=?", sessionId)

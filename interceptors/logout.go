@@ -11,9 +11,7 @@ type LogoutInterceptor struct {
 	*wsl.DefaultInterceptor
 }
 
-func (this *LogoutInterceptor) BeforeEach(tx *sql.Tx, script *string, sqlParams []interface{},
-	context map[string]interface{}, index int,
-	wslApp *wsl.WSL) (bool, error) {
+func (this *LogoutInterceptor) BeforeEach(tx *sql.Tx, context map[string]interface{}, script *string, sqlParams []interface{}, scriptIndex int) (bool, error) {
 
 	if context["session_id"] == "" {
 		return false, errors.New("Invalid token.")
@@ -22,15 +20,9 @@ func (this *LogoutInterceptor) BeforeEach(tx *sql.Tx, script *string, sqlParams 
 	return false, nil
 }
 
-func (this *LogoutInterceptor) AfterEach(
-	tx *sql.Tx,
-	params map[string]string,
-	result interface{},
-	context map[string]interface{},
-	index int,
-	wslApp *wsl.WSL) error {
-
-	userId := params["user_id"]
+func (this *LogoutInterceptor) AfterEach(tx *sql.Tx, context map[string]interface{}, result interface{}, scriptIndex int) error {
+	params := context["params"].(map[string]interface{})
+	userId := params["user_id"].(string)
 	delete(userKeys, userId)
 	delete(userSessionIds, context["session_id"].(string))
 	return nil

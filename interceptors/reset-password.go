@@ -12,7 +12,7 @@ type ResetPasswordInterceptor struct {
 	*wsl.DefaultInterceptor
 }
 
-func (this *ResetPasswordInterceptor) BeforeEach(tx *sql.Tx, script *string, sqlParams []interface{}, context map[string]interface{}, index int, wslApp *wsl.WSL) (bool, error) {
+func (this *ResetPasswordInterceptor) BeforeEach(tx *sql.Tx, context map[string]interface{}, script *string, sqlParams []interface{}, scriptIndex int) (bool, error) {
 
 	if context["session_id"] == "" {
 		return false, errors.New("Invalid token.")
@@ -21,13 +21,8 @@ func (this *ResetPasswordInterceptor) BeforeEach(tx *sql.Tx, script *string, sql
 	return false, nil
 }
 
-func (this *ResetPasswordInterceptor) AfterEach(
-	tx *sql.Tx,
-	params map[string]string,
-	result interface{},
-	context map[string]interface{},
-	index int,
-	wslApp *wsl.WSL) error {
+func (this *ResetPasswordInterceptor) AfterEach(tx *sql.Tx, context map[string]interface{}, result interface{}, scriptIndex int) error {
+	params := context["params"].(map[string]interface{})
 
 	username := params["_0"]
 	userData, err := gosqljson.QueryTxToMap(tx, "lower", "SELECT ID FROM USER WHERE USERNAME=? OR EMAIL=?", username, username)
