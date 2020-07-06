@@ -2,6 +2,7 @@ package interceptors
 
 import (
 	"database/sql"
+	"fmt"
 
 	"github.com/elgs/wsl"
 )
@@ -16,7 +17,7 @@ func (this *LoginInterceptor) BeforeEach(tx *sql.Tx, context map[string]interfac
 	// fmt.Println(*script)
 	// fmt.Println(sqlParams)
 	// fmt.Println(context)
-	// fmt.Println(index)
+	// fmt.Println(scriptIndex, sqlParams)
 	return false, nil
 }
 
@@ -26,7 +27,7 @@ func (this *LoginInterceptor) AfterEach(tx *sql.Tx, context map[string]interface
 	// fmt.Println(params)
 	// fmt.Println(result)
 	// fmt.Println(context)
-	// fmt.Println(index)
+	fmt.Println(scriptIndex, result)
 	// fmt.Println("====================================")
 
 	// if session, ok := data[1].([]map[string]string); ok && len(session) > 0 {
