@@ -39,11 +39,11 @@ func (this *LoadScriptsInterceptor) Before(tx *sql.Tx, context map[string]interf
 	return errors.New("No Access")
 }
 
-func (this *LoadScriptsInterceptor) BeforeEach(tx *sql.Tx, context map[string]interface{}, script *string, sqlParams []interface{}, scriptIndex int) (bool, error) {
+func (this *LoadScriptsInterceptor) BeforeEach(tx *sql.Tx, context map[string]interface{}, script *string, sqlParams []interface{}, scriptIndex int, cumulativeResults interface{}) (bool, error) {
 	return false, nil
 }
 
-func (this *LoadScriptsInterceptor) AfterEach(tx *sql.Tx, context map[string]interface{}, result interface{}, scriptIndex int) error {
+func (this *LoadScriptsInterceptor) AfterEach(tx *sql.Tx, context map[string]interface{}, result interface{}, allResults interface{}, scriptIndex int) error {
 
 	// data, ok := result["data"].([]interface{})
 	// if !ok {

@@ -11,7 +11,7 @@ type LoginInterceptor struct {
 	*wsl.DefaultInterceptor
 }
 
-func (this *LoginInterceptor) BeforeEach(tx *sql.Tx, context map[string]interface{}, script *string, sqlParams []interface{}, scriptIndex int) (bool, error) {
+func (this *LoginInterceptor) BeforeEach(tx *sql.Tx, context map[string]interface{}, script *string, sqlParams []interface{}, scriptIndex int, cumulativeResults interface{}) (bool, error) {
 
 	// fmt.Println("BeforeEach")
 	// fmt.Println(*script)
@@ -21,12 +21,13 @@ func (this *LoginInterceptor) BeforeEach(tx *sql.Tx, context map[string]interfac
 	return false, nil
 }
 
-func (this *LoginInterceptor) AfterEach(tx *sql.Tx, context map[string]interface{}, result interface{}, scriptIndex int) error {
+func (this *LoginInterceptor) AfterEach(tx *sql.Tx, context map[string]interface{}, result interface{}, allResults interface{}, scriptIndex int) error {
 
 	// fmt.Println("AfterEach")
 	// fmt.Println(params)
 	// fmt.Println(result)
 	// fmt.Println(context)
+	fmt.Println(allResults)
 	fmt.Println(scriptIndex, result)
 	// fmt.Println("====================================")
 

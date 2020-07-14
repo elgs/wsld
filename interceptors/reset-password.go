@@ -12,7 +12,7 @@ type ResetPasswordInterceptor struct {
 	*wsl.DefaultInterceptor
 }
 
-func (this *ResetPasswordInterceptor) BeforeEach(tx *sql.Tx, context map[string]interface{}, script *string, sqlParams []interface{}, scriptIndex int) (bool, error) {
+func (this *ResetPasswordInterceptor) BeforeEach(tx *sql.Tx, context map[string]interface{}, script *string, sqlParams []interface{}, scriptIndex int, cumulativeResults interface{}) (bool, error) {
 
 	if context["session_id"] == "" {
 		return false, errors.New("Invalid token.")
@@ -21,7 +21,7 @@ func (this *ResetPasswordInterceptor) BeforeEach(tx *sql.Tx, context map[string]
 	return false, nil
 }
 
-func (this *ResetPasswordInterceptor) AfterEach(tx *sql.Tx, context map[string]interface{}, result interface{}, scriptIndex int) error {
+func (this *ResetPasswordInterceptor) AfterEach(tx *sql.Tx, context map[string]interface{}, result interface{}, allResults interface{}, scriptIndex int) error {
 	params := context["params"].(map[string]interface{})
 
 	username := params["_0"]

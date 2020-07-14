@@ -10,7 +10,7 @@ type SessionInterceptor struct {
 	*wsl.DefaultInterceptor
 }
 
-func (this *SessionInterceptor) AfterEach(tx *sql.Tx, context map[string]interface{}, result interface{}, scriptIndex int) error {
+func (this *SessionInterceptor) AfterEach(tx *sql.Tx, context map[string]interface{}, result interface{}, allResults interface{}, scriptIndex int) error {
 
 	// data, ok := result["data"].([]interface{})
 	// if !ok {

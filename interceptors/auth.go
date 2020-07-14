@@ -80,10 +80,10 @@ func (this *AuthInterceptor) Before(tx *sql.Tx, context map[string]interface{}) 
 	return nil
 }
 
-func (this *AuthInterceptor) BeforeEach(tx *sql.Tx, context map[string]interface{}, script *string, sqlParams []interface{}, scriptIndex int) (bool, error) {
+func (this *AuthInterceptor) BeforeEach(tx *sql.Tx, context map[string]interface{}, script *string, sqlParams []interface{}, scriptIndex int, cumulativeResults interface{}) (bool, error) {
 	return false, nil
 }
-func (this *AuthInterceptor) AfterEach(tx *sql.Tx, context map[string]interface{}, result interface{}, scriptIndex int) error {
+func (this *AuthInterceptor) AfterEach(tx *sql.Tx, context map[string]interface{}, result interface{}, allResults interface{}, scriptIndex int) error {
 	return nil
 }
 func (this *AuthInterceptor) OnError(err *error) error {
