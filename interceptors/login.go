@@ -2,83 +2,40 @@ package interceptors
 
 import (
 	"database/sql"
-	"fmt"
 
 	"github.com/elgs/wsl"
+	"github.com/pkg/errors"
 )
 
 type LoginInterceptor struct {
 	*wsl.DefaultInterceptor
 }
 
-func (this *LoginInterceptor) BeforeEach(tx *sql.Tx, context map[string]interface{}, script *string, sqlParams []interface{}, scriptIndex int, cumulativeResults interface{}) (bool, error) {
-
-	// fmt.Println("BeforeEach")
-	// fmt.Println(*script)
-	// fmt.Println(sqlParams)
-	// fmt.Println(context)
-	// fmt.Println(scriptIndex, sqlParams)
-	return false, nil
-}
-
 func (this *LoginInterceptor) AfterEach(tx *sql.Tx, context map[string]interface{}, result interface{}, allResults interface{}, scriptIndex int) error {
 
-	// fmt.Println("AfterEach")
-	// fmt.Println(params)
-	// fmt.Println(result)
-	// fmt.Println(context)
-	fmt.Println(allResults)
-	fmt.Println(scriptIndex, result)
-	// fmt.Println("====================================")
+	if scriptIndex == 4 {
+		if val, ok := result.([]map[string]string); ok && len(val) == 1 {
+			context["session_id"] = val[0]["session_id"]
+			email := val[0]["email"]
+			userFlag := val[0]["user_flag"]
+			userFlagCode := val[0]["user_flag_code"]
 
-	// if session, ok := data[1].([]map[string]string); ok && len(session) > 0 {
-	// 	result["session_id"] = session[0]["session_id"]
-	// 	delete(result, "data")
-	// 	return nil
-	// }
+			if wslApp, ok := context["app"].(*wsl.WSL); ok && userFlag == "signup" {
+				err := wslApp.SendMail(email, "New Account Verification Code", userFlagCode, email)
+				if err != nil {
+					return err
+				}
+			}
+		}
+	}
 
-	// 	vCode := u[0]["v_code"]
-	// 	if vCode != "" {
-	// 		fmt.Printf("User not verified (%v)", u[0]["username"])
+	return nil
+}
 
-	// 		email := u[0]["email"]
-	// 		err := wslApp.SendMail(wslApp.Config.App["mail_from"].(string), "New Account Verification Code", vCode, email)
-	// 		if err != nil {
-	// 			return err
-	// 		}
-
-	// 		result["data"] = "user_not_verified"
-
-	// 		return nil
-	// 	}
-
-	// 	log.Printf("Login succeeded (%v)", u[0]["username"])
-
-	// 	mapClaims := map[string]interface{}{
-	// 		"user_id":  u[0]["user_id"],
-	// 		"id":       u[0]["id"],
-	// 		"mode":     u[0]["mode"],
-	// 		"username": u[0]["username"],
-	// 		"email":    u[0]["email"],
-	// 	}
-
-	// 	userId := u[0]["user_id"]
-	// 	sessionKey, err := getSessionKey(tx, userId)
-	// 	if err != nil {
-	// 		return err
-	// 	}
-
-	// 	expMinutes := wslApp.Config.App["session_expire_in_minutes"].(float64)
-	// 	token, err := jwt.Encode(mapClaims, int(expMinutes)*60, sessionKey)
-	// 	if err != nil {
-	// 		return err
-	// 	}
-
-	// 	result["token"] = token
-	// 	delete(result, "data")
-	// } else {
-	// 	log.Println("Login failed.")
-	// 	return errors.New("login_failed")
-	// }
+func (this *LoginInterceptor) After(tx *sql.Tx, context map[string]interface{}, results *interface{}, allResult interface{}) error {
+	if context["session_id"] == nil {
+		return errors.New("login_failed")
+	}
+	*results = map[string]interface{}{"access_token": context["session_id"]}
 	return nil
 }

@@ -6,49 +6,43 @@ import (
 	"fmt"
 
 	"github.com/elgs/gosqljson"
-	"github.com/elgs/jwt"
 	"github.com/elgs/wsl"
 )
 
-var userKeys = make(map[string]string)
-var userSessionIds = make(map[string]bool)
+var sessionQuery = `SELECT
+USER.ID AS USER_ID,
+USER.USERNAME,
+USER.EMAIL,
+USER.USER_FLAG,
+USER.MODE,
+USER.TIME_CREATED,
+USER_SESSION.ID AS SESSION_ID,
+USER_SESSION.LOGIN_TIME,
+USER_SESSION.IP,
+USER_SESSION.SESSION_FLAG
+FROM USER INNER JOIN USER_SESSION ON USER.ID=USER_SESSION.USER_ID 
+WHERE USER_SESSION.ID=?`
+
+var sessions = make(map[string]map[string]string)
+
+func getSession(tx *sql.Tx, sessionId string) (map[string]string, error) {
+	if val, ok := sessions[sessionId]; ok {
+		return val, nil
+	}
+
+	dbResult, err := gosqljson.QueryTxToMap(tx, "lower", sessionQuery, sessionId)
+	if err != nil {
+		return nil, err
+	}
+	if len(dbResult) != 1 {
+		return nil, errors.New("session_not_found")
+	}
+	sessions[sessionId] = dbResult[0]
+	return dbResult[0], nil
+}
 
 type AuthInterceptor struct {
 	*wsl.DefaultInterceptor
-}
-
-func getSessionKey(tx *sql.Tx, userId string) (string, error) {
-	if val, ok := userKeys[userId]; ok {
-		return val, nil
-	}
-	dbResult, err := gosqljson.QueryTxToMap(tx, "lower", "SELECT PASSWORD FROM USER WHERE ID=?", userId)
-	if err != nil {
-		return "", err
-	}
-	if len(dbResult) != 1 {
-		return "", errors.New("User not found.")
-	}
-	sessionKey := dbResult[0]["password"]
-	if sessionKey == "" {
-		return "", errors.New("Session key is empty.")
-	}
-	userKeys[userId] = sessionKey
-	return sessionKey, nil
-}
-
-func getSessionId(tx *sql.Tx, sessionId string) (bool, error) {
-	if val, ok := userSessionIds[sessionId]; ok {
-		return val, nil
-	}
-	dbResult, err := gosqljson.QueryTxToMap(tx, "lower", "SELECT ID FROM USER_SESSION WHERE ID=? AND NOT JSON_CONTAINS_PATH(STATUS, 'one', '$.pfv');", sessionId)
-	if err != nil {
-		return false, err
-	}
-	if len(dbResult) != 1 {
-		return false, errors.New("Session not found.")
-	}
-	userSessionIds[sessionId] = true
-	return true, nil
 }
 
 func (this *AuthInterceptor) Before(tx *sql.Tx, context map[string]interface{}) error {
@@ -56,26 +50,18 @@ func (this *AuthInterceptor) Before(tx *sql.Tx, context map[string]interface{}) 
 	params := context["params"].(map[string]interface{})
 
 	if tokenString, ok := context["access_token"].(string); ok {
-		claims, err := jwt.Decode(tokenString)
-		userId := claims["user_id"]
-		sessionId := claims["id"].(string)
-		hasSessionId, err := getSessionId(tx, sessionId)
-		if !hasSessionId || err != nil {
-			return errors.New("Invalid token.")
+
+		session, err := getSession(tx, tokenString)
+		if err != nil {
+			return err
 		}
 
-		sessionKey, err := getSessionKey(tx, userId.(string))
-		verified, err := jwt.Verify(tokenString, sessionKey)
-		if !verified || err != nil {
-			return errors.New("Invalid key.")
-		}
+		params["__session_id"] = fmt.Sprintf("%v", session["session_id"])
+		params["__user_id"] = fmt.Sprintf("%v", session["user_id"])
+		params["__user_mode"] = fmt.Sprintf("%v", session["mode"])
 
-		params["__session_id"] = fmt.Sprintf("%v", sessionId)
-		params["__user_id"] = fmt.Sprintf("%v", userId)
-		params["__user_mode"] = fmt.Sprintf("%v", claims["mode"])
-
-		// signify token is verified, token interceptors could check context["session_id"] for whether token is verified, or ignore for public apis.
-		context["session_id"] = sessionId
+		context["session_id"] = session["session_id"]
+		context["session"] = session
 	}
 	return nil
 }

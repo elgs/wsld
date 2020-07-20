@@ -9,6 +9,7 @@ import (
 	"github.com/elgs/wsl"
 	"github.com/elgs/wsld/interceptors"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/gobuffalo/packr"
 )
 
 func main() {
@@ -17,7 +18,7 @@ func main() {
 	flag.Parse()
 
 	if *version {
-		fmt.Println("Alpha 20200412")
+		fmt.Println("Alpha 20200719")
 		os.Exit(0)
 	}
 
@@ -26,22 +27,43 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// Register a bunch of interceptors
-	registerInterceptors()
+	loadBuiltInScripts(wsld)
+	registerInterceptors(wsld)
 
 	wsld.Start()
 	wsl.Hook()
 }
 
-func registerInterceptors() {
-	wsl.RegisterGlobalInterceptors(&interceptors.AuthInterceptor{})
+func registerInterceptors(wsld *wsl.WSL) {
+	wsld.RegisterGlobalInterceptors(&interceptors.AuthInterceptor{})
 
-	wsl.RegisterQueryInterceptors("load-scripts", &interceptors.LoadScriptsInterceptor{})
-	wsl.RegisterQueryInterceptors("login", &interceptors.LoginInterceptor{})
-	wsl.RegisterQueryInterceptors("logout", &interceptors.LogoutInterceptor{})
-	wsl.RegisterQueryInterceptors("session", &interceptors.SessionInterceptor{})
-	wsl.RegisterQueryInterceptors("forget-password-send-code", &interceptors.ForgetPasswordInterceptor{})
-	wsl.RegisterQueryInterceptors("forget-password-verify-code", &interceptors.ResetPasswordInterceptor{})
-	wsl.RegisterQueryInterceptors("reset-password", &interceptors.ResetPasswordInterceptor{})
-	wsl.RegisterQueryInterceptors("change-password", &interceptors.ChangePasswordInterceptor{})
+	wsld.RegisterQueryInterceptors("load-scripts", &interceptors.LoadScriptsInterceptor{})
+	wsld.RegisterQueryInterceptors("signup", &interceptors.SignupInterceptor{})
+	wsld.RegisterQueryInterceptors("login", &interceptors.LoginInterceptor{})
+	wsld.RegisterQueryInterceptors("verify-user", &interceptors.VerifyUserInterceptor{})
+	wsld.RegisterQueryInterceptors("logout", &interceptors.LogoutInterceptor{})
+	wsld.RegisterQueryInterceptors("session", &interceptors.SessionInterceptor{})
+	wsld.RegisterQueryInterceptors("forget-password-send-code", &interceptors.ForgetPasswordSendCodeInterceptor{})
+	wsld.RegisterQueryInterceptors("reset-password", &interceptors.ResetPasswordInterceptor{})
+	wsld.RegisterQueryInterceptors("change-password", &interceptors.ChangePasswordInterceptor{})
+}
+
+var scriptNames = []string{
+	"init",
+	"signup",
+	"login",
+	"verify-user",
+	"session",
+	"logout",
+	"forget-password-send-code",
+	"forget-password-reset-password",
+}
+
+func loadBuiltInScripts(wsld *wsl.WSL) {
+	scriptsBox := packr.NewBox("./scripts")
+	for _, scriptName := range scriptNames {
+		if scriptString, err := scriptsBox.FindString(fmt.Sprint(scriptName, ".sql")); err == nil {
+			wsld.Scripts[scriptName] = scriptString
+		}
+	}
 }

@@ -32,7 +32,7 @@ func (this *ResetPasswordInterceptor) AfterEach(tx *sql.Tx, context map[string]i
 	if len(userData) != 1 {
 		return errors.New("Failed to find user.")
 	}
-	userId := userData[0]["id"]
-	delete(userKeys, userId)
+	// userId := userData[0]["id"]
+	// delete(userKeys, userId)
 	return nil
 }

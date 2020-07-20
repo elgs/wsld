@@ -13,12 +13,12 @@ type LoadScriptsInterceptor struct {
 
 var scriptNames []string
 
-func loadScripts(config *wsl.Config) ([]string, error) {
-	err := config.LoadScripts("")
-	scriptNames := make([]string, len(config.App["scripts"].(map[string]interface{})))
+func loadScripts(app *wsl.WSL) ([]string, error) {
+	err := app.LoadScripts("")
+	scriptNames := make([]string, len(app.Scripts))
 
 	i := 0
-	for k := range config.App["scripts"].(map[string]interface{}) {
+	for k := range app.Scripts {
 		scriptNames[i] = k
 		i++
 	}
@@ -29,7 +29,7 @@ func (this *LoadScriptsInterceptor) Before(tx *sql.Tx, context map[string]interf
 	params := context["params"].(map[string]interface{})
 	app := context["app"].(*wsl.WSL)
 	if params["__user_mode"] == "root" {
-		sn, err := loadScripts(app.Config)
+		sn, err := loadScripts(app)
 		scriptNames = sn
 		if err != nil {
 			return err

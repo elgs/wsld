@@ -2,7 +2,6 @@ package interceptors
 
 import (
 	"database/sql"
-	"errors"
 
 	"github.com/elgs/wsl"
 )
@@ -11,19 +10,10 @@ type LogoutInterceptor struct {
 	*wsl.DefaultInterceptor
 }
 
-func (this *LogoutInterceptor) BeforeEach(tx *sql.Tx, context map[string]interface{}, script *string, sqlParams []interface{}, scriptIndex int, cumulativeResults interface{}) (bool, error) {
-
-	if context["session_id"] == "" {
-		return false, errors.New("Invalid token.")
+func (this *LogoutInterceptor) After(tx *sql.Tx, context map[string]interface{}, results *interface{}, allResult interface{}) error {
+	// params := context["params"].(map[string]interface{})
+	if val, ok := context["session_id"].(string); ok {
+		delete(sessions, val)
 	}
-
-	return false, nil
-}
-
-func (this *LogoutInterceptor) AfterEach(tx *sql.Tx, context map[string]interface{}, result interface{}, allResults interface{}, scriptIndex int) error {
-	params := context["params"].(map[string]interface{})
-	userId := params["user_id"].(string)
-	delete(userKeys, userId)
-	delete(userSessionIds, context["session_id"].(string))
 	return nil
 }

@@ -32,7 +32,7 @@ func (this *ChangePasswordInterceptor) AfterEach(tx *sql.Tx, context map[string]
 	if len(userData) != 1 {
 		return errors.New("Failed to find user.")
 	}
-	userId := userData[0]["user_id"]
-	delete(userKeys, userId)
+	// userId := userData[0]["user_id"]
+	// delete(userKeys, userId)
 	return nil
 }
