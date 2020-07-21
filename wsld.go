@@ -37,7 +37,6 @@ func main() {
 func registerInterceptors(wsld *wsl.WSL) {
 	wsld.RegisterGlobalInterceptors(&interceptors.AuthInterceptor{})
 
-	wsld.RegisterQueryInterceptors("load-scripts", &interceptors.LoadScriptsInterceptor{})
 	wsld.RegisterQueryInterceptors("signup", &interceptors.SignupInterceptor{})
 	wsld.RegisterQueryInterceptors("login", &interceptors.LoginInterceptor{})
 	wsld.RegisterQueryInterceptors("verify-user", &interceptors.VerifyUserInterceptor{})
@@ -55,6 +54,8 @@ var scriptNames = []string{
 	"verify-user",
 	"session",
 	"logout",
+	"change-password",
+	"reset-password",
 	"forget-password-send-code",
 	"forget-password-reset-password",
 }

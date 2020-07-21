@@ -62,14 +62,16 @@ func (this *AuthInterceptor) Before(tx *sql.Tx, context map[string]interface{}) 
 
 		context["session_id"] = session["session_id"]
 		context["session"] = session
+		context["user_id"] = session["user_id"]
+		context["user_mode"] = session["mode"]
 	}
 	return nil
 }
 
-func (this *AuthInterceptor) BeforeEach(tx *sql.Tx, context map[string]interface{}, script *string, sqlParams []interface{}, scriptIndex int, cumulativeResults interface{}) (bool, error) {
+func (this *AuthInterceptor) BeforeEach(tx *sql.Tx, context map[string]interface{}, script *string, sqlParams []interface{}, scriptIndex int, cumulativeResults []interface{}) (bool, error) {
 	return false, nil
 }
-func (this *AuthInterceptor) AfterEach(tx *sql.Tx, context map[string]interface{}, result interface{}, allResults interface{}, scriptIndex int) error {
+func (this *AuthInterceptor) AfterEach(tx *sql.Tx, context map[string]interface{}, result interface{}, cumulativeResults []interface{}, scriptIndex int) error {
 	return nil
 }
 func (this *AuthInterceptor) OnError(err *error) error {

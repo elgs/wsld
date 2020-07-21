@@ -24,7 +24,7 @@ func (this *ForgetPasswordSendCodeInterceptor) Before(tx *sql.Tx, context map[st
 	return nil
 }
 
-func (this *ForgetPasswordSendCodeInterceptor) AfterEach(tx *sql.Tx, context map[string]interface{}, result interface{}, allResults interface{}, scriptIndex int) error {
+func (this *ForgetPasswordSendCodeInterceptor) AfterEach(tx *sql.Tx, context map[string]interface{}, result interface{}, cumulativeResults []interface{}, scriptIndex int) error {
 
 	if scriptIndex == 2 {
 		if val, ok := result.([]map[string]string); ok && len(val) == 1 {
