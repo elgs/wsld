@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	"log"
 
 	"github.com/elgs/wsl"
@@ -11,10 +10,7 @@ import (
 )
 
 func main() {
-	confFile := flag.String("c", "/etc/wsld.json", "configration file path")
-	flag.Parse()
-
-	app, err := wsl.New(*confFile)
+	app, err := wsl.New()
 	if err != nil {
 		log.Fatal(err)
 	}
