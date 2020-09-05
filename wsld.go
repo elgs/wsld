@@ -5,6 +5,7 @@ import (
 
 	"github.com/elgs/wsl"
 	"github.com/elgs/wsl/interceptors"
+	"github.com/elgs/wsl/jobs"
 	"github.com/elgs/wsl/scripts"
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -15,9 +16,10 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// optionally load built in user management interceptors and scripts
+	// optionally load built in user management interceptors and scripts, and jobs
 	scripts.LoadBuiltInScripts(app)
 	interceptors.RegisterBuiltInInterceptors(app)
+	jobs.RegisterBuiltInJobs(app)
 
 	// done manully
 	// wsld.RegisterGlobalInterceptors(&interceptors.AuthInterceptor{})
@@ -26,6 +28,9 @@ func main() {
 
 	// wsld.Scripts["init"] = scripts.Init
 	// wsld.Scripts["signup"] = scripts.Signup
+	// ...
+
+	// wsld.RegisterJob("clean-trash", CleanPrivateFlags)
 	// ...
 
 	app.Start()
