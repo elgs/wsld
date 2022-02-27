@@ -8,10 +8,10 @@ github.com/elgs/gosqljson v0.0.0-20160403005647-027aa4915315 h1:0NXTHkloWMqOB1KH
 github.com/elgs/gosqljson v0.0.0-20160403005647-027aa4915315/go.mod h1:QhwWWjjii22wonb8HPfn6AkBRA95VpJ+xVqyhnCSbbU=
 github.com/elgs/gostrgen v0.0.0-20161222160715-9d61ae07eeae h1:3KvK2DmA7TxQ6PZ2f0rWbdqjgJhRcqgbY70bBeE4clI=
 github.com/elgs/gostrgen v0.0.0-20161222160715-9d61ae07eeae/go.mod h1:wruC5r2gHdr/JIUs5Rr1V45YtsAzKXZxAnn/5rPC97g=
-github.com/elgs/wsl v0.0.0-20210307110457-6a1c7b13cde6 h1:Y8ETVi4AL9jKOAgJDjBP0HFveOxg5VV5xP/oeXQ14Xs=
-github.com/elgs/wsl v0.0.0-20210307110457-6a1c7b13cde6/go.mod h1:fzFCdeoHHhyHwvbw2hJd9qv4BBhTygH6e9BiwbP1lfM=
-github.com/go-sql-driver/mysql v1.5.0 h1:ozyZYNQW3x3HtqT1jira07DN2PArx2v7/mN66gGcHOs=
-github.com/go-sql-driver/mysql v1.5.0/go.mod h1:DCzpHaOWr8IXmIStZouvnhqoel9Qv2LBy8hT2VhHyBg=
+github.com/elgs/wsl v0.0.0-20210417213411-26b77158ad64 h1:ikceG47MmdXVoI13tjB+9RRp5vYIJ8GkKS1s/e4Dp7o=
+github.com/elgs/wsl v0.0.0-20210417213411-26b77158ad64/go.mod h1:fzFCdeoHHhyHwvbw2hJd9qv4BBhTygH6e9BiwbP1lfM=
+github.com/go-sql-driver/mysql v1.6.0 h1:BCTh4TKNUYmOmMUcQ3IipzF5prigylS7XXjEkfCHuOE=
+github.com/go-sql-driver/mysql v1.6.0/go.mod h1:DCzpHaOWr8IXmIStZouvnhqoel9Qv2LBy8hT2VhHyBg=
 github.com/pkg/errors v0.9.1 h1:FEBLx1zS214owpjy7qsBeixbURkuhQAwrK5UwLGTwt4=
 github.com/pkg/errors v0.9.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
