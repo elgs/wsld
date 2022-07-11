@@ -25,8 +25,8 @@ func main() {
 
 	app := wsl.NewApp(config)
 
-	// app.RegisterQueryInterceptors("signup", &SignupInterceptor{})
 	app.RegisterGlobalInterceptors(&interceptors.AuthInterceptor{})
+	app.RegisterScriptInterceptors("scripts/signup", &interceptors.SignupInterceptor{})
 
 	app.Start()
 }

@@ -7,7 +7,7 @@ replace github.com/elgs/wsl => ../wsl
 require (
 	github.com/elgs/gosqljson v0.0.0-20160403005647-027aa4915315
 	github.com/elgs/gostrgen v0.0.0-20220325073726-0c3e00d082f6
-	github.com/elgs/wsl v0.0.0-20220711052050-093eefea6656
+	github.com/elgs/wsl v0.0.0-20220711085911-ed8b8929c5dc
 	github.com/go-sql-driver/mysql v1.6.0
 )
 
