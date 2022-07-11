@@ -6,8 +6,7 @@ import (
 	"log"
 
 	"github.com/elgs/wsl"
-	"github.com/elgs/wsl/interceptors"
-	"github.com/elgs/wsl/scripts"
+	"github.com/elgs/wsld/interceptors"
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -26,9 +25,8 @@ func main() {
 
 	app := wsl.NewApp(config)
 
-	// optionally load built in user management interceptors and scripts, and jobs
-	scripts.LoadBuiltInScripts(app)
-	interceptors.RegisterBuiltInInterceptors(app)
+	// app.RegisterQueryInterceptors("signup", &SignupInterceptor{})
+	app.RegisterGlobalInterceptors(&interceptors.AuthInterceptor{})
 
 	app.Start()
 }
