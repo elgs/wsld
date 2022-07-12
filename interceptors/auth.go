@@ -41,7 +41,7 @@ func (this *AuthInterceptor) getSession(tx *sql.Tx, sessionId string) (map[strin
 		return val, nil
 	}
 
-	dbResult, err := gosqljson.QueryTxToMap(tx, "lower", sessionQuery, sessionId)
+	dbResult, err := gosqljson.QueryToMap(tx, gosqljson.Lower, sessionQuery, sessionId)
 	if err != nil {
 		return nil, err
 	}
@@ -75,11 +75,11 @@ func (this *AuthInterceptor) getSession(tx *sql.Tx, sessionId string) (map[strin
 }
 
 func (this *AuthInterceptor) getUserFlags(tx *sql.Tx, userId string) ([]map[string]string, error) {
-	return gosqljson.QueryTxToMap(tx, "lower", flagsQuery, userId)
+	return gosqljson.QueryToMap(tx, gosqljson.Lower, flagsQuery, userId)
 }
 
 func (this *AuthInterceptor) updateLastSeen(db *sql.DB, sessionId string, ip string) {
-	gosqljson.ExecDb(db, updateLastSeenQuery, ip, sessionId)
+	gosqljson.Exec(db, updateLastSeenQuery, ip, sessionId)
 }
 
 type AuthInterceptor struct {
