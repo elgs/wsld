@@ -11,14 +11,15 @@ type SignupInterceptor struct {
 	*wsl.DefaultInterceptor
 }
 
-func (this *SignupInterceptor) Before(tx *sql.Tx, context map[string]any) error {
+func (this *SignupInterceptor) Before(tx *sql.Tx, context *wsl.Context) error {
 
 	signupCode, err := gostrgen.RandGen(6, gostrgen.Digit, "", "")
 	if err != nil {
 		return err
 	}
-	params := context["params"].(map[string]any)
-	params["__signup"] = signupCode
+	_ = signupCode
+	// params := context["params"].(map[string]any)
+	// params["__signup"] = signupCode
 
 	return nil
 }

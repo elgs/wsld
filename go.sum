@@ -1,8 +1,8 @@
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
-github.com/elgs/gorediscache v0.0.0-20220715024807-4eb3b9b68434 h1:E2vdjob/YKxbQUuxLAfEe9hC6tIRsSHDbNOyxNNW0mM=
-github.com/elgs/gorediscache v0.0.0-20220715024807-4eb3b9b68434/go.mod h1:GV56kNoDDnAd1x7gRJcpLmd0qrQ32X+WWkQiAeITO1U=
+github.com/elgs/gorediscache v0.0.0-20220715103921-4c862341613d h1:9z9+lRA7s8JhA0Ni54RpYmN5QZeVlXRD6A+meo70OJY=
+github.com/elgs/gorediscache v0.0.0-20220715103921-4c862341613d/go.mod h1:GV56kNoDDnAd1x7gRJcpLmd0qrQ32X+WWkQiAeITO1U=
 github.com/elgs/gosplitargs v0.0.0-20161028071935-a491c5eeb3c8 h1:bD2/rCXwgXJm2vgoSSSCM9IPjVFfEoQFFblzg7HHABI=
 github.com/elgs/gosplitargs v0.0.0-20161028071935-a491c5eeb3c8/go.mod h1:o4DgpccPNAQAlPSxo7I4L/LWNh2oyr/BBGSynrLTmZM=
 github.com/elgs/gosqljson v0.0.0-20220712125658-2f85b34a6a73 h1:XVGQgQ4p7MjiSE4wkt8RilXOQ2CNYNx8cA+Mp4cPwew=
