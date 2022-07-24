@@ -3,6 +3,7 @@ package interceptors
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 
 	"github.com/elgs/gosqljson"
 	"github.com/elgs/wsl"
@@ -23,7 +24,7 @@ WHERE USER_SESSION.ID=?
 `
 
 var flagsQuery = `
-SELECT CODE, VALUE, PRIVATE FROM USER_FLAG WHERE USER_ID=?
+SELECT CODE, VALUE FROM USER_FLAG WHERE USER_ID=?
 `
 
 var updateLastSeenQuery = `
@@ -33,48 +34,41 @@ LAST_SEEN_IP=?
 WHERE ID=?
 `
 
-var Sessions = make(map[string]map[string]any)
-
-func (this *AuthInterceptor) getSession(tx *sql.Tx, sessionId string) (map[string]any, error) {
-	if val, ok := Sessions[sessionId]; ok {
-		return val, nil
+func (this *AuthInterceptor) getSession(tx *sql.Tx, context *wsl.Context) (map[string]string, error) {
+	if session, err := context.App.Cache.GetMap("session:" + context.SessionID); err != nil && len(session) > 0 {
+		context.Session = session
+		return session, nil
 	}
 
-	dbResult, err := gosqljson.QueryToMap(tx, gosqljson.Lower, sessionQuery, sessionId)
+	dbResult, err := gosqljson.QueryToMap(tx, gosqljson.Lower, sessionQuery, context.SessionID)
 	if err != nil {
 		return nil, err
 	}
 	if len(dbResult) != 1 {
-		return nil, errors.New("session_not_found")
+		return nil, errors.New("Session not found.")
 	}
-	Sessions[sessionId], err = wsl.ConvertMap[string, any](dbResult[0])
+	session := dbResult[0]
+	err = context.App.Cache.SetMap("session:"+context.SessionID, session, 0)
 	if err != nil {
 		return nil, err
 	}
 
-	userId := dbResult[0]["user_id"]
+	userId := session["user_id"]
 	userFlags, err := this.getUserFlags(tx, userId)
 	if err != nil {
 		return nil, err
 	}
+	context.Flags = userFlags
 
-	userFlagsMap := make(map[string]any)
-	for _, flag := range userFlags {
-		private := flag["private"]
-		if private == "1" {
-			userFlagsMap[flag["code"]] = ""
-		} else {
-			userFlagsMap[flag["code"]] = flag["value"]
-		}
-	}
-
-	Sessions[sessionId]["flags"] = userFlagsMap
-
-	return Sessions[sessionId], nil
+	return session, nil
 }
 
-func (this *AuthInterceptor) getUserFlags(tx *sql.Tx, userId string) ([]map[string]string, error) {
-	return gosqljson.QueryToMap(tx, gosqljson.Lower, flagsQuery, userId)
+func (this *AuthInterceptor) getUserFlags(tx *sql.Tx, userId string) (map[string]string, error) {
+	flagMpas, err := gosqljson.QueryToMap(tx, gosqljson.Lower, flagsQuery, userId)
+	if err != nil || len(flagMpas) != 1 {
+		return nil, err
+	}
+	return flagMpas[0], nil
 }
 
 func (this *AuthInterceptor) updateLastSeen(db *sql.DB, sessionId string, ip string) {
@@ -86,25 +80,17 @@ type AuthInterceptor struct {
 }
 
 func (this *AuthInterceptor) Before(tx *sql.Tx, context *wsl.Context) error {
-
+	fmt.Println("aaaaa")
 	if context.AccessToken != "" {
-
-		session, err := this.getSession(tx, context.AccessToken)
+		session, err := this.getSession(tx, context)
 		if err != nil {
 			return err
 		}
 		db := context.App.GetDB("main")
 		go this.updateLastSeen(db, context.AccessToken, context.ClientIP)
 
-		_ = session
-		// params["__session_id"] = fmt.Sprintf("%v", session["session_id"])
-		// params["__user_id"] = fmt.Sprintf("%v", session["user_id"])
-		// params["__user_mode"] = fmt.Sprintf("%v", session["mode"])
-
-		// context["session_id"] = session["session_id"]
-		// context["session"] = session
-		// context["user_id"] = session["user_id"]
-		// context["user_mode"] = session["mode"]
+		context.Params["__session_id"] = fmt.Sprintf("%v", session["session_id"])
+		context.Params["__user_id"] = fmt.Sprintf("%v", session["user_id"])
 	}
 	return nil
 }

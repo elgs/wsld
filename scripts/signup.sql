@@ -23,5 +23,4 @@ ID=@user_flag_safe_id,
 USER_ID=@user_safe_id,
 CODE='signup',
 VALUE='__signup',
-PRIVATE=1,
 CREATED_TIME=@now_utc;

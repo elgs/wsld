@@ -16,4 +16,5 @@
 
 wsld
 .vscode/
+__debug_bin
 wsld.json

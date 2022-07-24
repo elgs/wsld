@@ -43,7 +43,6 @@ create TABLE USER_FLAG (
 	USER_ID char(32) COLLATE utf8mb4_general_ci NOT NULL,
 	CODE varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
 	VALUE varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-	PRIVATE tinyint(1) NOT NULL,
 	CREATED_TIME datetime NOT NULL,
 	PRIMARY KEY (ID),
 	UNIQUE KEY USER_ID (USER_ID,CODE)

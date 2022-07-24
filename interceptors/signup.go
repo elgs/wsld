@@ -17,9 +17,7 @@ func (this *SignupInterceptor) Before(tx *sql.Tx, context *wsl.Context) error {
 	if err != nil {
 		return err
 	}
-	_ = signupCode
-	// params := context["params"].(map[string]any)
-	// params["__signup"] = signupCode
+	context.Params["__signup"] = signupCode
 
 	return nil
 }

@@ -17,5 +17,4 @@ ID=@safe_id,
 USER_ID=@uid,
 CODE='forget_password',
 VALUE='__forget_password',
-PRIVATE=1,
 CREATED_TIME=@now_utc;
