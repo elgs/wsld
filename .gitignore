@@ -18,3 +18,4 @@ wsld
 .vscode/
 __debug_bin
 wsld.json
+build.sh

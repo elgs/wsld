@@ -80,17 +80,28 @@ type AuthInterceptor struct {
 }
 
 func (this *AuthInterceptor) Before(tx *sql.Tx, context *wsl.Context) error {
-	fmt.Println("aaaaa")
-	if context.AccessToken != "" {
-		session, err := this.getSession(tx, context)
-		if err != nil {
-			return err
-		}
-		db := context.App.GetDB("main")
-		go this.updateLastSeen(db, context.AccessToken, context.ClientIP)
-
-		context.Params["__session_id"] = fmt.Sprintf("%v", session["session_id"])
-		context.Params["__user_id"] = fmt.Sprintf("%v", session["user_id"])
+	if context.AccessToken == "" {
+		context.AuthLevel = wsl.AuthNoToken
+		return nil
 	}
+
+	session, err := this.getSession(tx, context)
+	if err != nil {
+		context.AuthLevel = wsl.AuthFailed
+		return nil
+	}
+
+	db := context.App.GetDB("main")
+	go this.updateLastSeen(db, context.AccessToken, context.ClientIP)
+
+	context.Params["__session_id"] = fmt.Sprintf("%v", session["session_id"])
+	context.Params["__user_id"] = fmt.Sprintf("%v", session["user_id"])
+
+	if session["mode"] == "root" {
+		context.AuthLevel = wsl.AuthRootAuthorized
+	} else {
+		context.AuthLevel = wsl.AuthUserAuthorized
+	}
+
 	return nil
 }
